@@ -2,7 +2,7 @@
 include 'top.php';
 ?>
 <main>
-    hello world
+cool houses
 </main>
 
 <?php
