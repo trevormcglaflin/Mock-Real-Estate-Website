@@ -21,7 +21,7 @@ img {
     width: 300px;
 }
 
-#donation-message {
+#buyer-message {
     color: green;
 }
 
@@ -155,10 +155,10 @@ textarea {
     text-align: left;
 }
 
-.admin-success-message {
+.success-message {
   color: green;
 }
 
-.admin-error-message {
+.error-message {
   color: red;
 }
