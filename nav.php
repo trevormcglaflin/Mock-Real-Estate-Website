@@ -25,19 +25,19 @@
 
 
 <?php
-// only show this dropdown if the user is an admin
-if ($isAdmin) {
-    print '<div class = "dropdown">';
-    print '<button class = "dropbtn"  href="admin.php">Admin';
-    print '<i class="fa fa-caret-down"></i>';
-    print '</button>';
-    print '<div class = "dropdown-content">';
-    print '<a href="admin\insertRecordForm.php">Add Wildlife Record</a>';
-    print '<a href="admin\updateRecord.php">Update Wildlife Records</a>';
-    print '<a href="admin\deleteRecord.php">Delete Wildlife Records</a>';
-    print '</div>';
-    print '</div>';
-}
+print '<div class = "dropdown">';
+print '<button class = "dropbtn"  href="admin.php">Admin';
+print '<i class="fa fa-caret-down"></i>';
+print '</button>';
+print '<div class = "dropdown-content">';
+print '<a href="admin\addHouseForm.php">Add House</a>';
+print '<a href="admin\updateHouse.php">Update House</a>';
+print '<a href="admin\deleteHouse.php">Delete House</a>';
+print '<a href="admin\addRealtorForm.php">Add Realtor</a>';
+print '<a href="admin\updateRealtor.php">Update Realtor</a>';
+print '<a href="admin\deleteRealtor.php">Delete Realtor</a>';
+print '</div>';
+print '</div>';
 ?>
 
 </nav>
