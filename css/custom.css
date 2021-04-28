@@ -1,0 +1,164 @@
+:root{
+    --main-color: black;
+    --main-bg-color: rgb(56, 162, 197);
+}
+
+body{
+    border: thin solid var(--main-color);
+    background-color: var(--main-bg-color);
+    color: var(--main-color);
+    max-width: 50em;
+    line-height: 1.3em;
+    padding: 1%;
+    margin: auto;
+}
+
+html {
+    background-color: beige;
+}
+
+img {
+    width: 300px;
+}
+
+#donation-message {
+    color: green;
+}
+
+.button {
+    float: right;
+    background: black;
+    color: white;
+}
+
+
+/* grid setup */
+body{
+    display: grid;
+    grid-template-areas: "nav" "header" "main" "footer";
+}
+
+header{
+    grid-area: header;
+    text-align: center;
+}
+
+main{
+    grid-area: main;
+    text-align: center;
+    
+}
+
+footer{
+    grid-area: footer;
+    text-align: center;
+    margin-bottom: 2em;
+}
+
+/* navbar stuff */
+.navbar {
+    overflow: hidden;
+    background-color: #333;
+    font-family: Arial;
+  }
+  
+  
+  .navbar a {
+    float: left;
+    font-size: 16px;
+    color: white;
+    text-align: center;
+    padding: 14px 16px;
+    text-decoration: none;
+  }
+  
+  .dropdown {
+    float: left;
+    overflow: hidden;
+  }
+  
+  
+  .dropdown .dropbtn {
+    font-size: 16px;
+    border: none;
+    outline: none;
+    color: white;
+    padding: 14px 16px;
+    background-color: inherit;
+    font-family: inherit; 
+    margin: 0; 
+  }
+  
+
+  .navbar a:hover, .dropdown:hover .dropbtn {
+    background-color: DarkSalmon;
+   }
+  
+  .dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f9f9f9;
+    min-width: 160px;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+  }
+  
+  .dropdown-content a {
+    float: none;
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    text-align: left;
+  }
+  
+  .dropdown-content a:hover {
+    background-color: #ddd;
+  }
+  
+  .dropdown:hover .dropdown-content {
+    display: block;
+  }
+
+.activePage {
+    background-color: DarkSalmon;
+}
+
+.odd {
+    background-color: DarkSalmon;
+    width: 50%;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: auto;
+    margin-right:auto;
+}
+
+.even {
+    background-color: lightgray;
+    width: 50%;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    margin-left: auto;
+    margin-right:auto;
+}
+
+.admin-button {
+    float: right;
+}
+
+textarea {
+    display: inline-block;
+    resize: none;
+}
+
+#addWildlifeForm {
+    text-align: left;
+}
+
+.admin-success-message {
+  color: green;
+}
+
+.admin-error-message {
+  color: red;
+}

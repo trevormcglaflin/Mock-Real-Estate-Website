@@ -12,6 +12,12 @@
     ?>" href="about.php">About</a>
 
     <a class="<?php
+    if (PATH_PARTS['filename'] == "browseHouses") {
+        print'activePage';
+    }
+    ?>" href="browseHouses.php">Browse Houses</a>
+
+    <a class="<?php
     if (PATH_PARTS['filename'] == "contact") {
         print'activePage';
     }

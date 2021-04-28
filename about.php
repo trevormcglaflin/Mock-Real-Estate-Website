@@ -21,8 +21,6 @@ include 'top.php';
             <li>Celebrate: we will help you celebrate your new purchase by organizing a house warming party</li>
         </ol>
     </p>
-
-
 </main>
 <?php
 
