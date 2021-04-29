@@ -24,18 +24,6 @@ print '<!-- make database connections -->';
 require_once(LIB_PATH . '/Database.php');
 $thisDatabaseReader = new DataBase('tmcglafl_reader', 'r', DATABASE_NAME);
 $thisDatabaseWriter = new DataBase('tmcglafl_writer', 'w', DATABASE_NAME);
-
-// get users netid
-$netId = htmlentities($_SERVER["REMOTE_USER"], ENT_QUOTES, "UTF-8");
-
-// figure out if user is admin
-$adminSql = "SELECT pmkNetId FROM tblAdmin WHERE pmkNetId = '" . $netId . "'";
-
-$adminCredential = $thisDatabaseReader->select($adminSql);
-$isAdmin = false;
-if (sizeOf($adminCredential) != 0) {
-    $isAdmin = true;
-}
 ?>
 </head>
 

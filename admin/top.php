@@ -8,13 +8,13 @@
         <title>McGlaflin Crib Co.</title>
 
         <link rel = "stylesheet"
-            href = "css/custom.css?version=<?php print time(); ?>"
+            href = "../css/custom.css?version=<?php print time(); ?>"
             type="text/css">
         <link rel = "stylesheet" media="(max-width:800px)"
-            href = "css/tablet.css?version=<?php print time(); ?>"
+            href = "../css/tablet.css?version=<?php print time(); ?>"
             type="text/css">
         <link rel="stylesheet" media="(max-width: 600px)"
-            href = "css/phone.css?version=<?php print time(); ?>"
+            href = "../css/phone.css?version=<?php print time(); ?>"
             type = "text/css">
 <!-- **** include libaries **** -->
 <?php
@@ -28,21 +28,23 @@ $thisDatabaseWriter = new DataBase('tmcglafl_writer', 'w', DATABASE_NAME);
 // get users netid
 $netId = htmlentities($_SERVER["REMOTE_USER"], ENT_QUOTES, "UTF-8");
 
-// figure out if user is admin
-$adminSql = "SELECT pmkNetId, fldPermissionLevel FROM tblAdmin WHERE pmkNetId = ?";
-$data = array($netId);
 
-$adminCredential = $thisDatabaseReader->select($adminSql);
-$isAdmin = false;
-if (sizeOf($adminCredential) != 0) {
-    $isAdmin = true;
-}
+
+// figure out if user is admin
+//$adminSql = "SELECT pmkNetId FROM tblAdmin WHERE pmkNetId = ?";
+//$data = array($netId);
+
+//$adminCredential = $thisDatabaseReader->select($adminSql);
+//$isAdmin = false;
+//if (sizeOf($adminCredential) != 0) {
+  //  $isAdmin = true;
+//}
 
 // if user is not admin stop the script
-if (!($isAdmin)) {
-    $message = "This page does not exist, please go away!";
-    die($message);
-}
+//if (!($isAdmin)) {
+    //$message = "This page does not exist, please go away!";
+    //die($message);
+//}
 ?>
 </head>
 

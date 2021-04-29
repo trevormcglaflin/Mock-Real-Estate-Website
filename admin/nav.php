@@ -12,7 +12,7 @@
     ?>" href="addHouseForm.php">Add House</a>
 
     <a class="<?php
-    if (PATH_PARTS['filename'] == "admin\update-house") {
+    if (PATH_PARTS['filename'] == "admin\updateHouse") {
         print'activePage';
     }
     ?>" href="updateHouse.php">Update House</a>

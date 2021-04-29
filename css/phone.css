@@ -1,0 +1,14 @@
+nav a{
+    display: block;
+    padding: 0.5%;
+    background-color: rgb(202, 91, 202)
+}
+
+nav {
+    text-align:left;
+    width: 20%;
+}
+
+h1, h2 {
+    font-size: large;
+}
