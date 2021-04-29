@@ -7,7 +7,7 @@ include 'top.php';
     //die($message);
 //}
 
-$houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 1000;
+$houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 
 $sql = 'SELECT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';
 $sql .= 'fldSquareFeet, fldNickName, fldImageUrl ';
@@ -18,7 +18,7 @@ $sql .= 'ORDER BY fldNickName';
 $data = array($houseId);
 $houses = $thisDatabaseReader->select($sql, $data);
 
-if (is_array($houses) && $houseId != 1000) {
+if (is_array($houses) && $houseId != 0) {
     $house = $houses[0];
 }
 else {

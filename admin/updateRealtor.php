@@ -7,30 +7,30 @@ include 'top.php';
     //die($message);
 //}
 
-$sql = 'SELECT pmkHouseId, fldNickName ';
-$sql .= 'FROM tblHouse ';
-$sql .= 'ORDER BY pmkHouseId';
+$sql = 'SELECT pmkNetId ';
+$sql .= 'FROM tblRealtor ';
+$sql .= 'ORDER BY pmkNetId';
+
 
 $data = '';
-$houses = $thisDatabaseReader->select($sql, $data);
+$realtors = $thisDatabaseReader->select($sql, $data);
 ?>
 
 <main>
 <?php
-print $netId;
-if(is_array($houses)){
+if(is_array($realtors)){
     $rowCount = 0;
     $rowClass = "even";
-    foreach($houses as $house){
+    foreach($realtors as $realtor){
         if ($rowCount % 2 == 0) {
             $rowClass = "even";
         }
         else {
             $rowClass = "odd";
         }
-        print '<p class=' . $rowClass . '>' . $house['fldNickName'];
-        print '<a class="admin-button" href = "../admin/deleteHouseForm.php?hid=' . $house['pmkHouseId'] .  '">';
-        print 'Delete';
+        print '<p class=' . $rowClass . '>' . $realtor['pmkNetId'];
+        print '<a class="admin-button" href = "../admin/addRealtorForm.php?hid=' . $realtor['pmkNetId'] .  '">';
+        print 'Update';
         print '</a></p>';
         $rowCount++;
     }

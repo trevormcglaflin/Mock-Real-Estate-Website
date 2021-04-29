@@ -1,6 +1,6 @@
 <?php
 include 'top.php';
-$houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 1000;
+$houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 ?>
 
 <main>
@@ -14,7 +14,7 @@ $sql .= 'WHERE pmkHouseId = ?';
 $data = array($houseId);
 $houses = $thisDatabaseReader->select($sql, $data);
 
-if (is_array($houses) && $housesId != 1000) {
+if (is_array($houses) && $housesId != 0) {
     $house = $houses[0];
 }
 
@@ -66,7 +66,7 @@ if(isset($_POST['btnSubmit'])) {
     $intentToBuy = $_POST['chkIntentToBuy'];
     
     
-    $critterId = (int) getData('hdnHouseId');
+    $houseId = (int) getData('hdnHouseId');
 
     //validate data
     if (!validateName($firstName)) {
@@ -96,7 +96,7 @@ if(isset($_POST['btnSubmit'])) {
 
 
     // TODO: make this validation better
-    if ($houseId < 0 && $houseId != 1000) {
+    if ($houseId < 0) {
         print '<p class="mistake">Hidden house id value is invalid.</p>';
         $saveData = false;
     }

@@ -1,6 +1,6 @@
 <?php
 include 'top.php';
-$houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 1000;
+$houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 print '<p>House Id = ' . $houseId;
 
 // get house info
