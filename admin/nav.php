@@ -22,5 +22,15 @@
         print'activePage';
     }
     ?>" href="deleteHouse.php">Delete House</a>
+    <a class="<?php
+    if (PATH_PARTS['filename'] == "admin\add-realtor") {
+        print'activePage';
+    }
+    ?>" href="addRealtorForm.php">Add Realtor</a>
+    <a class="<?php
+    if (PATH_PARTS['filename'] == "admin\update-realtor") {
+        print'activePage';
+    }
+    ?>" href="updateRealtor.php">Update Realtor</a>
 
 </nav>
