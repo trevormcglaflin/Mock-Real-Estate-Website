@@ -9,6 +9,8 @@ include 'top.php';
 
 $houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 
+
+
 $sql = 'SELECT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';
 $sql .= 'fldSquareFeet, fldDateListed, fldNickName, fldImageUrl ';
 $sql .= 'FROM tblHouse ';
@@ -85,7 +87,7 @@ if(isset($_POST['btnSubmit'])) {
     </form>
 
 <?php
-// show the information about the animal
+// show the information about the house
 if(is_array($houses)) {
     foreach($houses as $house) {
         print '<p>' . $house['fldNickName'] . '</p>';

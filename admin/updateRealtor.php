@@ -29,7 +29,7 @@ if(is_array($realtors)){
             $rowClass = "odd";
         }
         print '<p class=' . $rowClass . '>' . $realtor['pmkNetId'];
-        print '<a class="admin-button" href = "../admin/addRealtorForm.php?hid=' . $realtor['pmkNetId'] .  '">';
+        print '<a class="admin-button" href = "../admin/addRealtorForm.php?rid=' . $realtor['pmkNetId'] .  '">';
         print 'Update';
         print '</a></p>';
         $rowCount++;

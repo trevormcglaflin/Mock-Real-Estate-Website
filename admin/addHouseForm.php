@@ -115,58 +115,35 @@ if(isset($_POST['btnSubmit'])) {
     }
 
     if ($saveData) {
-        // TODO: figure out a better way to do this
-        // figure out how many records are already in the table
-        $sqlNumRecords = 'SELECT COUNT(*) FROM tblHouse';
-        $numRecords = $thisDatabaseReader->select($sqlNumRecords);
-        $numRecords = $numRecords[0]['COUNT(*)'];
+        $newRecord = true;
+        
+        // try to insert the house
+        $sql = 'INSERT INTO tblHouse SET ';
+        $sql .= 'pmkHouseId = ?, ';
+        $sql .= 'fldPrice = ?, ';
+        $sql .= 'fldAddress = ?, ';
+        $sql .= 'fldDescription = ?, ';
+        $sql .= 'fldDistrict = ?, ';
+        $sql .= 'fldSquareFeet = ?, ';
+        $sql .= 'fldNickName = ?, ';
+        $sql .= 'fldImageUrl = ?';
 
-        // this if condition checks whether or not the house already exists in the database
-        // if it does not, will insert a completely new record. If it does, we will update that record.
-        if ($houseId > $numRecords) {
-            $sql = 'INSERT INTO tblHouse SET ';
-            $sql .= 'pmkHouseId = ?, ';
-            $sql .= 'fldPrice = ?, ';
-            $sql .= 'fldAddress = ?, ';
-            $sql .= 'fldDescription = ?, ';
-            $sql .= 'fldDistrict = ?, ';
-            $sql .= 'fldSquareFeet = ?, ';
-            $sql .= 'fldNickName = ?, ';
-            $sql .= 'fldImageUrl = ?';
-
-            print $sql;
-            print '<br>';
-            print $houseId;
-            print '<br>';
-            print $price;
-            print '<br>';
-            print $address;
-            print '<br>';
-            print $description;
-            print '<br>';
-            print $district;
-            print '<br>';
-            print $squareFeet;
-            print '<br>';
-            print $nickName;
-            print '<br>';
-            print $imageUrl;
+        $data = array();
+        $data[] = $houseId;
+        $data[] = $price;
+        $data[] = $address;
+        $data[] = $description;
+        $data[] = $district;
+        $data[] = $squareFeet;
+        $data[] = $nickName;
+        $data[] = $imageUrl;
             
-            $data = array();
-            $data[] = $houseId;
-            $data[] = $price;
-            $data[] = $address;
-            $data[] = $description;
-            $data[] = $district;
-            $data[] = $squareFeet;
-            $data[] = $nickName;
-            $data[] = $imageUrl;
-            
-            # insert
-            $houseTableSuccess = $thisDatabaseWriter->insert($sql, $data);
-        }
-        else {
-            print 'here';
+        # insert
+        $houseTableSuccess = $thisDatabaseWriter->insert($sql, $data);
+        
+        // if the insert didn't work, that means the house pk already exists so update instead
+        if (!($houseTableSuccess)) {
+            $newRecord = $false;
             $sql = "UPDATE tblHouse SET ";
             $sql .= 'fldPrice = ?, ';
             $sql .= 'fldAddress = ?, ';
@@ -177,24 +154,6 @@ if(isset($_POST['btnSubmit'])) {
             $sql .= 'fldImageUrl = ? ';
             $sql .= "WHERE ";
             $sql .= "pmkHouseId = ?";
-
-            print $sql;
-            print '<br>';
-            print $houseId;
-            print '<br>';
-            print $price;
-            print '<br>';
-            print $address;
-            print '<br>';
-            print $description;
-            print '<br>';
-            print $district;
-            print '<br>';
-            print $squareFeet;
-            print '<br>';
-            print $nickName;
-            print '<br>';
-            print $imageUrl;
 
             $data = array();
             $data[] = $price;
@@ -210,9 +169,14 @@ if(isset($_POST['btnSubmit'])) {
             $houseTableSuccess = $thisDatabaseWriter->update($sql, $data);
         }
        
-        if ($houseTableSuccess) {
-            print '<h2 class="success-message">House Table Updated!</h2>';
+        // 
+        if ($houseTableSuccess && $newRecord) {
+            print '<h2 class="success-message">New Record Inserted into House Tables!</h2>';
         }
+        else if ($houseTableSuccess && !($newRecord)) {
+            print '<h2 class="success-message">House Record has been updated!</h2>';
+        }
+
         else {
             print '<p class="error-message">Something went wrong, your house table change was not submitted properly.</p>';
         }

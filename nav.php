@@ -35,7 +35,6 @@ print '<a href="admin\updateHouse.php">Update House</a>';
 print '<a href="admin\deleteHouse.php">Delete House</a>';
 print '<a href="admin\addRealtorForm.php">Add Realtor</a>';
 print '<a href="admin\updateRealtor.php">Update Realtor</a>';
-print '<a href="admin\deleteRealtor.php">Delete Realtor</a>';
 print '</div>';
 print '</div>';
 ?>
