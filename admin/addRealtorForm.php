@@ -109,6 +109,11 @@ if(isset($_POST['btnSubmit'])) {
         $saveData = false;
     }
 
+    if ($houseId < 0) {
+        print '<p class="mistake">House ID must be greater than 0.</p>';
+        $saveData = false;
+    }
+
     if ($saveData) {
         $newRecord = true;
 

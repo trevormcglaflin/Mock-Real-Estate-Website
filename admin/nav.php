@@ -33,9 +33,9 @@
     }
     ?>" href="updateRealtor.php">Update Realtor</a>
     <a class="<?php
-    if (PATH_PARTS['filename'] == "admin\update-realtor") {
+    if (PATH_PARTS['filename'] == "admin\house-to-assign") {
         print'activePage';
     }
-    ?>" href="updateRealtor.php">Assignment</a>
+    ?>" href="houseToAssign.php">Change Assignments</a>
 
 </nav>
