@@ -7,9 +7,13 @@ include 'top.php';
     //die($message);
 //}
 
+// this sql block selects all houses that have not already been sold because
+// you should not be able to delete a house that has been sold
+
 $sql = 'SELECT pmkHouseId, fldNickName ';
 $sql .= 'FROM tblHouse ';
-$sql .= 'ORDER BY pmkHouseId';
+$sql .= 'LEFT JOIN tblBuyerHouse ON pmkHouseId = fpkHouseId ';
+$sql .= 'WHERE fpkHouseId IS NULL';
 
 $data = '';
 $houses = $thisDatabaseReader->select($sql, $data);

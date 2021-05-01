@@ -21,12 +21,13 @@ $data = array($realtorId);
 $realtors = $thisDatabaseReader->select($sql, $data);
 print $realtorId;
 
-if (is_array($realtors) && $realtorId != 0) {
+if (is_array($realtors) && $realtorId != "") {
     $realtor = $realtors[0];
 }
 else {
     $realtor = NULL;
 }
+print $realtor['fldFirstName'];
 
 // intitialize default form values (set to existing values if updating)
 if (!is_null($realtor)) {
@@ -38,7 +39,7 @@ if (!is_null($realtor)) {
     $isActive = $realtor['fldIsActive'];
 }
 else {
-    $realtorId = NULL;
+    $realtorId = "";
     $firstName = "";
     $lastName = "";
     $realtorEmail = "";
@@ -87,7 +88,6 @@ if(isset($_POST['btnSubmit'])) {
         print '<p class="mistake">Please enter a valid first name (25 characters or less).</p>';
         $saveData = false;
     }
-
     if (strlen($lastName) > 30) {
         print '<p class="mistake">Please enter a valid last name (30 characters or less).</p>';
         $saveData = false;
@@ -110,41 +110,34 @@ if(isset($_POST['btnSubmit'])) {
     }
 
     if ($saveData) {
-        // TODO: there is probably a better way to do this
-        // to determine if we update or insert into the database, we must check to see if the netid already exists
-        $sql = 'SELECT pmkNetId FROM tblRealtor ORDER BY pmkNetId';
-        $realtorIdQuery = $thisDatabaseReader->select($sql, $data);
-        $realtorIdInDataBase = false;
-        foreach ($realtorIdQuery as $r) {
-            if ($r['pmkNetId'] == $realtor) {
-                $realtorIdInDataBase = true;
-            }
-        }
+        $newRecord = true;
 
-        if (!($realtorIdInDataBase)) {
-            $sql = 'INSERT INTO tblRealtor SET ';
-            $sql .= 'pmkNetId = ?, ';
-            $sql .= 'fldFirstName = ?, ';
-            $sql .= 'fldLastName = ?, ';
-            $sql .= 'fldRealtorEmail = ?, ';
-            $sql .= 'fldPhoneNumber = ?, ';
-            $sql .= 'fldProfile = ?, ';
-            $sql .= 'fldIsActive = ?';
+        // try to insert a new record first
+        $sql = 'INSERT INTO tblRealtor SET ';
+        $sql .= 'pmkNetId = ?, ';
+        $sql .= 'fldFirstName = ?, ';
+        $sql .= 'fldLastName = ?, ';
+        $sql .= 'fldRealtorEmail = ?, ';
+        $sql .= 'fldPhoneNumber = ?, ';
+        $sql .= 'fldProfile = ?, ';
+        $sql .= 'fldIsActive = ?';
 
-            $data = array();
-            $data[] = $realtorId;
-            $data[] = $firstName;
-            $data[] = $lastName;
-            $data[] = $realtorEmail;
-            $data[] = $phoneNumber;
-            $data[] = $profile;
-            $data[] = $isActive;
+        $data = array();
+        $data[] = $realtorId;
+        $data[] = $firstName;
+        $data[] = $lastName;
+        $data[] = $realtorEmail;
+        $data[] = $phoneNumber;
+        $data[] = $profile;
+        $data[] = $isActive;
             
-            # insert
-            $realtorTableSuccess = $thisDatabaseWriter->insert($sql, $data);
-        }
-        else {
-            print 'here';
+        # insert
+        $realtorTableSuccess = $thisDatabaseWriter->insert($sql, $data);
+        
+        // if the insertion didn't work, try updating the table 
+        if (!($realtorTableSuccess)) {
+            $newRecord = false;
+            
             $sql = "UPDATE tblRealtor SET ";
             $sql .= 'fldFirstName = ?, ';
             $sql .= 'fldLastName = ?, ';
@@ -154,7 +147,6 @@ if(isset($_POST['btnSubmit'])) {
             $sql .= 'fldisActive = ? ';
             $sql .= "WHERE ";
             $sql .= "pmkNetId = ?";
-
 
             $data = array();
             $data[] = $firstName;
@@ -169,18 +161,24 @@ if(isset($_POST['btnSubmit'])) {
             $realtorTableSuccess = $thisDatabaseWriter->update($sql, $data);
         }
        
-        if ($realtorTableSuccess) {
-            print '<h2 class="success-message">Realtor Table Updated!</h2>';
+        if ($realtorTableSuccess && $newRecord) {
+            print '<h2 class="success-message">New realtor successfully added!</h2>';
+        }
+        else if ($realtorTableSuccess && !($newRecord)) {
+            print '<h2 class="success-message">Realtor Record has been updated!</h2>';
         }
         else {
-            print '<p class="error-message">Something went wrong, your realtor table change was not submitted properly.</p>';
+            print '<p class="error-message">Something went wrong, your change was not submitted properly.</p>';
         }
     }
 }
 ?>
-
 <main>
-    <form action="<?php print PHP_SELF; ?>" id="addHouseForm" method="post">
+    <form action="<?php print PHP_SELF; ?>" id="addRealtorForm" method="post">
+        <p>
+            <label for="txtRealtorId">Realtor Net ID</label>
+            <input type="text" value="<?php print $realtorId; ?>" name="txtRealtorId" id="txtRealtorId">
+        </p>
         <p>
             <label for="txtFirstName">First Name</label>
             <input type="text" value="<?php print $firstName; ?>" name="txtFirstName" id="txtFirstName">
@@ -214,9 +212,6 @@ if(isset($_POST['btnSubmit'])) {
             }
             ?>
         </p>
-
-        
-        <?php print '<input type="hidden" id="hdnHouseId" name="hdnHouseId" value="' . $houseId . '">'; ?>
         <fieldset>
             <p><input type="submit" value="Insert Record" tabindex="999" name="btnSubmit"></p>
         </fieldset>

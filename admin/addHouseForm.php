@@ -45,10 +45,10 @@ else {
     $imageUrl = "";
 
     // TODO: find a better way to do this
-    // set house id by finding out how many records in table first
-    $sqlNumRecords = 'SELECT COUNT(*) FROM tblHouse';
-    $numRecords = $thisDatabaseReader->select($sqlNumRecords);
-    $houseId = $numRecords[0]['COUNT(*)'] + 1;
+    // set house id by finding the last record's id and adding one
+    $sql = 'SELECT pmkHouseId FROM tblHouse';
+    $houses = $thisDatabaseReader->select($sql);
+    $houseId = end($houses)['pmkHouseId'] + 1;
 }
 
 // set save data to true
@@ -72,7 +72,7 @@ if(isset($_POST['btnSubmit'])) {
         print '</pre>';
     }
 
-    //sanitize data
+    // sanitize data
     $price = (int) getData('txtPrice');
     $address = filter_var($_POST['txtAddress'], FILTER_SANITIZE_STRING);
     $description = filter_var($_POST['txtDescription'], FILTER_SANITIZE_STRING);
@@ -143,7 +143,7 @@ if(isset($_POST['btnSubmit'])) {
         
         // if the insert didn't work, that means the house pk already exists so update instead
         if (!($houseTableSuccess)) {
-            $newRecord = $false;
+            $newRecord = false;
             $sql = "UPDATE tblHouse SET ";
             $sql .= 'fldPrice = ?, ';
             $sql .= 'fldAddress = ?, ';

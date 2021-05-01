@@ -7,15 +7,24 @@ $houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 
 <?php
 
-$sql = 'SELECT pmkHouse, fldNickName ';
-$sql .= 'FROM tblHouse ';
-$sql .= 'WHERE pmkHouseId = ?';
+// get house info
+// this sql makes sure only lets houses that are still for sale and are assigned a realtor to be purchased
+$sql = 'SELECT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';
+$sql .= 'fldSquareFeet, fldNickName, fldImageUrl ';
+$sql .= 'FROM tblBuyerHouse ';
+$sql .= 'RIGHT JOIN tblHouse ON tblBuyerHouse.fpkHouseId = tblHouse.pmkHouseId ';
+$sql .= 'JOIN tblHouseRealtor ON tblHouse.pmkHouseID = tblHouseRealtor.fpkHouseId ';
+$sql .= 'WHERE tblBuyerHouse.fpkHouseId IS NULL AND pmkHouseId = ? ';
 
 $data = array($houseId);
 $houses = $thisDatabaseReader->select($sql, $data);
 
-if (is_array($houses) && $housesId != 0) {
+if (sizeof($houses) > 0) {
     $house = $houses[0];
+}
+else {
+    $house = NULL;
+    $houseId = 0;
 }
 
 // initialize default form values
@@ -44,7 +53,7 @@ function validateName($name) {
     return ctype_alpha($name);
 }
 
-if ($critterId != 1000) {
+if ($houseId != 0) {
     print '<h2>Purchase ' . $house['fldNickName'] . '</h2>';
 }
 
@@ -64,8 +73,6 @@ if(isset($_POST['btnSubmit'])) {
     
     // TODO: sanitize this, for some reason the getData function doesn't work
     $intentToBuy = $_POST['chkIntentToBuy'];
-    
-    
     $houseId = (int) getData('hdnHouseId');
 
     //validate data
@@ -94,8 +101,6 @@ if(isset($_POST['btnSubmit'])) {
         $saveData = false;
     }
 
-
-    // TODO: make this validation better
     if ($houseId < 0) {
         print '<p class="mistake">Hidden house id value is invalid.</p>';
         $saveData = false;
@@ -169,57 +174,52 @@ if(isset($_POST['btnSubmit'])) {
         }
     }
 }
-?>
-    <form action="<?php print PHP_SELF; ?>" id="buyerForm" method="post">
-        <fieldset class="personal">
-            <p>
-                <label for="txtFirstName">First Name</label>
-                <input type="text" value="<?php print $firstName; ?>" name="txtFirstName" id="txtFirstName">
-            </p>
-            <p>
-                <label for="txtLastName">Last Name</label>
-                <input type="text" value="<?php print $lastName; ?>" name="txtLastName" id="txtLastName">
-            </p>
-            <p>
-                <label for="txtEmail">Email</label>
-                <input type="text" value="<?php print $email; ?>" name="txtEmail" id="txtEmail">
-            </p>
-            <p>
-                <label for="txtPhoneNumber">Phone Number</label>
-                <input type="text" value="<?php print $phoneNumber; ?>" name="txtPhoneNumber" id="txtPhoneNumber">
-            </p>
-        </fieldset>
-        <fieldset class = "message">
-            <p>
-                <label for="txtMessage">Message</label>
-                <?php
-                print '<textarea id="txtMessage" name="txtMessage" rows="6" cols="50">' . $message . '</textarea>';
-                ?>
-            </p> 
-        </fieldset>
-        <fieldset class="checkboxes">
-            <p>
-                <label for="chkIntentToBuy">Do you intend to purchase this house?</label>
-                <?php 
-                if ($intentToBuy == 1) {
-                    print '<input type="checkbox" name="chkIntentToBuy" id="chkIntentToBuy" value="' . $intentToBuy . '" checked>';
-                }
-                else {
-                    print '<input type="checkbox" name="chkIntentToBuy" id="chkIntentToBuy" value ="' . $intentToBuy . '">';
-                }
-                ?>
-            </p>
-        </fieldset>
-        <?php print '<input type="hidden" id="hdnHouseId" name="hdnHouseId" value="' . $houseId . '">'; ?>
-        <fieldset>
-            <p><input type="submit" value="Purchase" tabindex="999" name="btnSubmit"></p>
-        </fieldset>
-    </form>
 
-
-</main>
-
-
-<?php
+// only show the form if the hid corresponds to a houseId that is on the market 
+// (assigned a realtor and not purchased already)
+if ($houseId != 0) {
+    print '<form action="' . PHP_SELF . '" id="buyerForm" method="post">';
+    print '<fieldset class="personal">';
+    print '<p>';
+    print '<label for="txtFirstName">First Name</label>';
+    print '<input type="text" value="' . $firstName . '" name="txtFirstName" id="txtFirstName">';
+    print '</p>';
+    print '<p>';
+    print '<label for="txtLastName">Last Name</label>';
+    print '<input type="text" value="' . $lastName . '" name="txtLastName" id="txtLastName">';
+    print '</p>';
+    print '<p>';
+    print '<label for="txtEmail">Email</label>';
+    print '<input type="text" value="' . $email . '" name="txtEmail" id="txtEmail">';
+    print '</p>';
+    print '<p>';
+    print '<label for="txtPhoneNumber">Phone Number</label>';
+    print '<input type="text" value="' . $phoneNumber . '" name="txtPhoneNumber" id="txtPhoneNumber">';
+    print '</p>';
+    print '</fieldset>';
+    print '<fieldset class = "message">';
+    print '<p>';
+    print '<label for="txtMessage">Message</label>';
+    print '<textarea id="txtMessage" name="txtMessage" rows="6" cols="50">' . $message . '</textarea>';
+    print '</p>'; 
+    print '</fieldset>';
+    print '<fieldset class="checkboxes">';
+    print '<p>';
+    print '<label for="chkIntentToBuy">Do you intend to purchase this house?</label>';
+    if ($intentToBuy == 1) {
+        print '<input type="checkbox" name="chkIntentToBuy" id="chkIntentToBuy" value="' . $intentToBuy . '" checked>';
+    }
+    else {
+        print '<input type="checkbox" name="chkIntentToBuy" id="chkIntentToBuy" value ="' . $intentToBuy . '">';
+    }
+    print '</p>';
+    print '</fieldset>';
+    print '<input type="hidden" id="hdnHouseId" name="hdnHouseId" value="' . $houseId . '">'; 
+    print '<fieldset>';
+    print '<p><input type="submit" value="Purchase" tabindex="999" name="btnSubmit"></p>';
+    print '</fieldset>';
+    print '</form>';
+}
+print '</main>';
 include 'footer.php';
 ?>

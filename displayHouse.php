@@ -4,18 +4,21 @@ $houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 print '<p>House Id = ' . $houseId;
 
 // get house info
+// this sql only lets houses that are still for sale and are assigned a realtor to be viewed
 $sql = 'SELECT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';
 $sql .= 'fldSquareFeet, fldNickName, fldImageUrl ';
-$sql .= 'FROM tblHouse ';
-$sql .= 'WHERE pmkHouseId = ?';
-$sql .= 'ORDER BY pmkHouseId';
+$sql .= 'FROM tblBuyerHouse ';
+$sql .= 'RIGHT JOIN tblHouse ON tblBuyerHouse.fpkHouseId = tblHouse.pmkHouseId ';
+$sql .= 'JOIN tblHouseRealtor ON tblHouse.pmkHouseID = tblHouseRealtor.fpkHouseId ';
+$sql .= 'WHERE tblBuyerHouse.fpkHouseId IS NULL AND pmkHouseId = ? ';
+
 $data = array($houseId);
 $houses = $thisDatabaseReader->select($sql, $data);
 ?>
 
 <main>
 <?php
-if(is_array($houses)) {
+if(sizeof($houses) > 0) {
     foreach($houses as $house) {
         print '<a class="button" href="purchaseHouse.php?hid=' . $house['pmkHouseId'] . '">Buy ' . $house['fldNickName'] . '!</a><br>';
         print '<p>Adress: ' . $house['fldAddress'] . '</p>';
