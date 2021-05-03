@@ -1,6 +1,6 @@
 :root{
     --main-color: black;
-    --main-bg-color: rgb(56, 162, 197);
+    --main-bg-color: powderblue;
 }
 
 body{
@@ -14,11 +14,11 @@ body{
 }
 
 html {
-    background-color: beige;
+    background-color: ghostwhite;
 }
 
 img {
-    width: 300px;
+    width: 400px;
 }
 
 #buyer-message {
@@ -49,7 +49,14 @@ header{
 main{
     grid-area: main;
     text-align: center;
-    
+}
+
+p {
+  text-align: left;
+}
+
+figure {
+  text-align: center;
 }
 
 footer{
@@ -94,7 +101,7 @@ footer{
   
 
   .navbar a:hover, .dropdown:hover .dropbtn {
-    background-color: DarkSalmon;
+    background-color: royalblue;
    }
   
   .dropdown-content {
@@ -124,12 +131,12 @@ footer{
   }
 
 .activePage {
-    background-color: DarkSalmon;
+    background-color: royalblue;
 }
 
 .odd {
-    background-color: DarkSalmon;
-    width: 50%;
+    background-color: royalblue;
+    width: 60%;
     margin-top: 0px;
     margin-bottom: 0px;
     margin-left: auto;
@@ -138,11 +145,22 @@ footer{
 
 .even {
     background-color: lightgray;
-    width: 50%;
+    width: 60%;
     margin-top: 0px;
     margin-bottom: 0px;
     margin-left: auto;
     margin-right:auto;
+}
+
+.realtor-block {
+  background-color: lightgray;
+  opacity: 0.85;
+}
+
+.house-block {
+  background-color: lightgray;
+  opacity: 0.85;
+  width: 40%;
 }
 
 .admin-button {
@@ -163,5 +181,9 @@ textarea {
 }
 
 .error-message {
+  color: red;
+}
+
+.warning { 
   color: red;
 }

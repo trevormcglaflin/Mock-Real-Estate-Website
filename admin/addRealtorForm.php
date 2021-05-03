@@ -76,7 +76,8 @@ if(isset($_POST['btnSubmit'])) {
     $realtorEmail = filter_var($_POST['txtRealtorEmail'], FILTER_SANITIZE_EMAIL);
     $phoneNumber = filter_var($_POST['txtPhoneNumber'], FILTER_SANITIZE_STRING);
     $profile = filter_var($_POST['txtProfile'], FILTER_SANITIZE_STRING);
-    $isActive = filter_var($_POST['chkIsActive'], FILTER_SANITIZE_STRING);
+    // TODO: santize this properly
+    $isActive = (int) getData('chkIsActive');
     
     
     // validate data
@@ -104,9 +105,8 @@ if(isset($_POST['btnSubmit'])) {
         print '<p class="mistake">Please enter a valid profile (3000 characters or less).</p>';
         $saveData = false;
     }
-    if ($isActive != 0 && $isActive != 1) {
-        print '<p class="mistake">The is active field must be a 0 or 1.</p>';
-        $saveData = false;
+    if ($isActive != 1) {
+        $isActive = 0;
     }
 
     if ($houseId < 0) {
@@ -115,9 +115,7 @@ if(isset($_POST['btnSubmit'])) {
     }
 
     if ($saveData) {
-        $newRecord = true;
-
-        // try to insert a new record first
+        // insert record (or update if key already exists)
         $sql = 'INSERT INTO tblRealtor SET ';
         $sql .= 'pmkNetId = ?, ';
         $sql .= 'fldFirstName = ?, ';
@@ -125,7 +123,15 @@ if(isset($_POST['btnSubmit'])) {
         $sql .= 'fldRealtorEmail = ?, ';
         $sql .= 'fldPhoneNumber = ?, ';
         $sql .= 'fldProfile = ?, ';
+        $sql .= 'fldIsActive = ? ';
+        $sql .= 'ON DUPLICATE KEY UPDATE ';
+        $sql .= 'fldFirstName = ?, ';
+        $sql .= 'fldLastName = ?, ';
+        $sql .= 'fldRealtorEmail = ?, ';
+        $sql .= 'fldPhoneNumber = ?, ';
+        $sql .= 'fldProfile = ?, ';
         $sql .= 'fldIsActive = ?';
+
 
         $data = array();
         $data[] = $realtorId;
@@ -135,42 +141,18 @@ if(isset($_POST['btnSubmit'])) {
         $data[] = $phoneNumber;
         $data[] = $profile;
         $data[] = $isActive;
+        $data[] = $firstName;
+        $data[] = $lastName;
+        $data[] = $realtorEmail;
+        $data[] = $phoneNumber;
+        $data[] = $profile;
+        $data[] = $isActive;
             
-        # insert
+        # insert/update
         $realtorTableSuccess = $thisDatabaseWriter->insert($sql, $data);
         
-        // if the insertion didn't work, try updating the table 
-        if (!($realtorTableSuccess)) {
-            $newRecord = false;
-            
-            $sql = "UPDATE tblRealtor SET ";
-            $sql .= 'fldFirstName = ?, ';
-            $sql .= 'fldLastName = ?, ';
-            $sql .= 'fldRealtorEmail = ?, ';
-            $sql .= 'fldPhoneNumber = ?, ';
-            $sql .= 'fldProfile = ?, ';
-            $sql .= 'fldisActive = ? ';
-            $sql .= "WHERE ";
-            $sql .= "pmkNetId = ?";
-
-            $data = array();
-            $data[] = $firstName;
-            $data[] = $lastName;
-            $data[] = $realtorEmail;
-            $data[] = $phoneNumber;
-            $data[] = $profile;
-            $data[] = $isActive;
-            $data[] = $realtorId;
-
-            # update
-            $realtorTableSuccess = $thisDatabaseWriter->update($sql, $data);
-        }
-       
-        if ($realtorTableSuccess && $newRecord) {
-            print '<h2 class="success-message">New realtor successfully added!</h2>';
-        }
-        else if ($realtorTableSuccess && !($newRecord)) {
-            print '<h2 class="success-message">Realtor Record has been updated!</h2>';
+        if ($realtorTableSuccess) {
+            print '<h2 class="success-message">Realtor database successfully updated!</h2>';
         }
         else {
             print '<p class="error-message">Something went wrong, your change was not submitted properly.</p>';

@@ -36,6 +36,11 @@
     if (PATH_PARTS['filename'] == "admin\house-to-assign") {
         print'activePage';
     }
-    ?>" href="houseToAssign.php">Change Assignments</a>
+    ?>" href="houseToAssign.php">Re-Assign House</a>
+    <a class="<?php
+    if (PATH_PARTS['filename'] == "admin\delete-purchase") {
+        print'activePage';
+    }
+    ?>" href="deletePurchase.php">Cancel Purchase</a>
 
 </nav>

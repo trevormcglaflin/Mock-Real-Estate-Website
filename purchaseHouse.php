@@ -28,11 +28,11 @@ else {
 }
 
 // initialize default form values
-$email = "email@email.com";
-$firstName = "Trevor";
-$lastName = "McGlaflin";
-$phoneNumber = "802-xxx-xxxx";
-$message = "Cool House!";
+$email = "";
+$firstName = "";
+$lastName = "";
+$phoneNumber = "";
+$message = "";
 $intentToBuy = 1;
 
 $saveData = true;
@@ -213,6 +213,7 @@ if ($houseId != 0) {
         print '<input type="checkbox" name="chkIntentToBuy" id="chkIntentToBuy" value ="' . $intentToBuy . '">';
     }
     print '</p>';
+    print '<p><small>NOTE: checking this box will take the house off the market. A realtor from our agency will contact you within 24 hours.</small></p>';
     print '</fieldset>';
     print '<input type="hidden" id="hdnHouseId" name="hdnHouseId" value="' . $houseId . '">'; 
     print '<fieldset>';

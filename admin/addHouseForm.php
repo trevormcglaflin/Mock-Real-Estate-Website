@@ -7,12 +7,14 @@ include 'top.php';
     //die($message);
 //}
 
+$netId = 'tmcglafl';
+
 $houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 
 $sql = 'SELECT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';
 $sql .= 'fldSquareFeet, fldNickName, fldImageUrl ';
 $sql .= 'FROM tblHouse ';
-$sql .= 'WHERE pmkHouseId = ?';
+$sql .= 'WHERE pmkHouseId = ? ';
 $sql .= 'ORDER BY fldNickName';
 
 $data = array($houseId);
@@ -66,6 +68,10 @@ function getData($field) {
 }
 
 if(isset($_POST['btnSubmit'])) {
+    // for image submission
+    include 'upload.php';
+    
+    
     if(DEBUG) {
         print '<p>POST array:<p><pre>';
         print_r($_POST);
@@ -79,11 +85,16 @@ if(isset($_POST['btnSubmit'])) {
     $district = filter_var($_POST['txtDistrict'], FILTER_SANITIZE_STRING);
     $squareFeet = (int) getData('txtSquareFeet');
     $nickName = filter_var($_POST['txtNickName'], FILTER_SANITIZE_STRING);
-    $imageUrl = filter_var($_POST['txtImageUrl'], FILTER_SANITIZE_STRING);
     $houseId = (int) getData('hdnHouseId');
+    $realtorId = filter_var($_POST['hdnRealtorId'], FILTER_SANITIZE_STRING);
+    // filename variable is created when upload.php is ran above
+    $imageUrl = filter_var($fileName, FILTER_SANITIZE_STRING);
     
-
     // validate data
+    // this is based on the file upload
+    if ($uploadOk == 0) {
+        $saveData = false;
+    }
     if ($price < 0 || $price > 250000000) {
         print '<p class="mistake">Price must be between 0 and 250000000.</p>';
         $saveData = false;
@@ -111,6 +122,16 @@ if(isset($_POST['btnSubmit'])) {
     }
     if (strlen($imageUrl) > 50) {
         print '<p class="mistake">Please enter a valid image url (50 characters or less).</p>';
+        $saveData = false;
+    }
+
+    if ($houseId < 0) {
+        print '<p class="mistake">Invalid house id (must be a positive integer).</p>';
+        $saveData = false;
+    }
+
+    if (strlen($realtorId) > 10) {
+        print '<p class="mistake">Please enter a valid realtor id (10 characters or less).</p>';
         $saveData = false;
     }
 
@@ -169,23 +190,46 @@ if(isset($_POST['btnSubmit'])) {
             $houseTableSuccess = $thisDatabaseWriter->update($sql, $data);
         }
        
-        // 
+        // if it is a new realtor, assign the house to the realtor that added it
+        // NOTE: if the house is being updated, the realtor assigned to it will not change (unless you go to assign realtor page)
+        if ($newRecord) {
+            $sql = 'INSERT INTO tblHouseRealtor SET ';
+            $sql .= 'fpkNetId = ?, ';
+            $sql .= 'fpkHouseId = ? ';
+            $data = array();
+            $data[] = $realtorId;
+            $data[] = $houseId;
+            $houseRealtorTableSuccess = $thisDatabaseWriter->insert($sql, $data);
+        }
+        
+        
+        // display messages accordingly
         if ($houseTableSuccess && $newRecord) {
-            print '<h2 class="success-message">New Record Inserted into House Tables!</h2>';
+            print '<h2 class="success-message">' . $nickName .  ' successfully inserted into database!</h2>';
         }
         else if ($houseTableSuccess && !($newRecord)) {
-            print '<h2 class="success-message">House Record has been updated!</h2>';
+            print '<h2 class="success-message">' . $nickName . ' record has been updated in database!</h2>';
         }
 
         else {
             print '<p class="error-message">Something went wrong, your house table change was not submitted properly.</p>';
+            $deleteImage = shell_exec('rm ../images/' . $fileName);
+            print '<p class="error-message">Image has been removed from directory.</p>';
         }
+        if ($houseRealtorTableSuccess) {
+            print '<p class="success-message">' . $realtorId . ' has been assigned to ' . $nickName . '!</p>';
+            print '<p>NOTE: to change the realtor assigned to this house go to house assignment tab above</p>';
+        }
+    }
+    // if form validation failed remove the image from directory
+    else {
+        $deleteImage = shell_exec('rm ../images/' . $fileName);
     }
 }
 ?>
 
 <main>
-    <form action="<?php print PHP_SELF; ?>" id="addHouseForm" method="post">
+    <form action="<?php print PHP_SELF; ?>" id="addHouseForm" method="post" enctype="multipart/form-data">
         <p>
             <label for="txtPrice">Price</label>
             <input type="text" value="<?php print $price; ?>" name="txtPrice" id="txtPrice">
@@ -207,16 +251,17 @@ if(isset($_POST['btnSubmit'])) {
         <p>
             <label for="txtSquareFeet">Square Feet</label>
             <input type="text" value="<?php print $squareFeet; ?>" name="txtSquareFeet" id="txtSquareFeet">
-        </p>
+        </p>  
         <p>
             <label for="txtNickName">Nick Name</label>
             <input type="text" value="<?php print $nickName; ?>" name="txtNickName" id="txtNickName">
         </p>
         <p>
-            <label for="txtImageUrl">Image Url</label>
-            <input type="text" value="<?php print $imageUrl; ?>" name="txtImageUrl" id="txtImageUrl">
-        </p>
+            Upload House Image:
+            <input type="file" name="fileToUpload" id="fileToUpload">
+        </p>  
         <?php print '<input type="hidden" id="hdnHouseId" name="hdnHouseId" value="' . $houseId . '">'; ?>
+        <?php print '<input type="hidden" id="hdnRealtorId" name="hdnRealtorId" value="' . $netId . '">'; ?>
         <fieldset>
             <p><input type="submit" value="Insert Record" tabindex="999" name="btnSubmit"></p>
         </fieldset>

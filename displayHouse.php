@@ -21,10 +21,12 @@ $houses = $thisDatabaseReader->select($sql, $data);
 if(sizeof($houses) > 0) {
     foreach($houses as $house) {
         print '<a class="button" href="purchaseHouse.php?hid=' . $house['pmkHouseId'] . '">Buy ' . $house['fldNickName'] . '!</a><br>';
-        print '<p>Adress: ' . $house['fldAddress'] . '</p>';
+        print '<section class="house-block">';
+        print '<p>Address: ' . $house['fldAddress'] . '</p>';
         print '<p>Price: ' . $house['fldPrice'] . '</p>';
         print '<p>District: ' . $house['fldDistrict'] . '</p>';
         print '<p>Square Feet: ' . $house['fldSquareFeet'] . '</p>';
+        print '</section>';
         print '<figure><img src=images/' . $house['fldImageUrl'] . ' alt=housePic></figure>';
         print nl2br($house['fldDescription']);
     }

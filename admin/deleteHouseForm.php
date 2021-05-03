@@ -45,8 +45,8 @@ function getData($field) {
 if(isset($_POST['btnSubmit'])) {
     // sanitize
     $houseId = (int) getData('hdnHouseId');
-
-    print $houseId;
+    $imageUrl = filter_var($_POST['hdnImageUrl'], FILTER_SANITIZE_STRING);
+    
 
     // delete record if field is valid
     if ($saveData) {
@@ -65,6 +65,9 @@ if(isset($_POST['btnSubmit'])) {
     }
     // display message
     if ($houseTableSuccess) {
+        $deleteImage = shell_exec('rm ../images/' . $imageUrl);
+        print $imageUrl;
+        
         print '<h2 class="success-message">House record has been deleted!</h2>';
     }
     else {
@@ -81,6 +84,7 @@ if(isset($_POST['btnSubmit'])) {
 if($houseId != 0) {
     print '<form action="' .PHP_SELF . '" id="deleteHouseForm" method="post">';
     print '<input type="hidden" id="hdnHouseId" name="hdnHouseId" value="' . $houseId . '">'; 
+    print '<input type="hidden" id="hdnImageUrl" name="hdnImageUrl" value="' . $house['fldImageUrl'] . '">'; 
     print '<fieldset>';
     print '<p><input type="submit" value="Delete Record" tabindex="999" name="btnSubmit"></p>';
     print '</fieldset>';
@@ -102,7 +106,6 @@ if($houseId != 0) {
         print $house['fldDateListed'];
         print '<h3><b>Image Url</b></h3>';
         print $house['fldImageUrl'];
-        
     }
 }
 else {
