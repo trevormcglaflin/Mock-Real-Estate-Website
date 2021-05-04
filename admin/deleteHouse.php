@@ -1,7 +1,7 @@
 <?php
 include 'top.php';
 
-if ($adminPermissionLevel < 2) {
+if ($adminPermissionLevel < 3) {
     $message = "You do not have permission to this page!";
     die($message);
 }
