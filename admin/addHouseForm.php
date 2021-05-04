@@ -68,7 +68,6 @@ if(isset($_POST['btnSubmit'])) {
     // for image submission
     include 'upload.php';
     
-    
     if(DEBUG) {
         print '<p>POST array:<p><pre>';
         print_r($_POST);

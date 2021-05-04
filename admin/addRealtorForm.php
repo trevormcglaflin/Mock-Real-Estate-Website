@@ -13,10 +13,8 @@ $sql .= 'fldProfile, fldIsActive ';
 $sql .= 'FROM tblRealtor ';
 $sql .= 'WHERE pmkNetId = ?';
 $sql .= 'ORDER BY pmkNetId';
-
 $data = array($realtorId);
 $realtors = $thisDatabaseReader->select($sql, $data);
-print $realtorId;
 
 if (is_array($realtors) && $realtorId != "") {
     $realtor = $realtors[0];
@@ -24,16 +22,21 @@ if (is_array($realtors) && $realtorId != "") {
 else {
     $realtor = NULL;
 }
-print $realtor['fldFirstName'];
+
+// another select statement to retrieve admin table permission level
+$sql = 'SELECT fldPermissionLevel FROM tblAdmin WHERE pmkNetId = ?';
+$data = array($realtorId);
+$adminRecord = $thisDatabaseReader->select($sql, $data);
 
 // intitialize default form values (set to existing values if updating)
-if (!is_null($realtor)) {
+if (!is_null($realtor) && sizeof($adminRecord) != 0) {
     $firstName = $realtor['fldFirstName'];
     $lastName = $realtor['fldLastName'];
     $realtorEmail = $realtor['fldRealtorEmail'];
     $phoneNumber = $realtor['fldPhoneNumber'];
     $profile = $realtor['fldProfile'];
     $isActive = $realtor['fldIsActive'];
+    $permissionLevel = $adminRecord[0]['fldPermissionLevel'];
 }
 else {
     $realtorId = "";
@@ -43,6 +46,7 @@ else {
     $phoneNumber = "";
     $profile = "";
     $isActive = 1;
+    $permissionLevel = 0;
 }
 
 // set save data to true
@@ -75,6 +79,7 @@ if(isset($_POST['btnSubmit'])) {
     $profile = filter_var($_POST['txtProfile'], FILTER_SANITIZE_STRING);
     // TODO: santize this properly
     $isActive = (int) getData('chkIsActive');
+    $permissionLevel = (int) getData('dwnPermissionLevel');
     
     
     // validate data
@@ -108,6 +113,11 @@ if(isset($_POST['btnSubmit'])) {
 
     if ($houseId < 0) {
         print '<p class="mistake">House ID must be greater than 0.</p>';
+        $saveData = false;
+    }
+
+    if ($permissionLevel != 0 && $permissionLevel != 1 && $permissionLevel != 2 && $permissionLevel != 3) {
+        print '<p class="mistake">Invalid permission level (must be 0-3).</p>';
         $saveData = false;
     }
 
@@ -150,6 +160,32 @@ if(isset($_POST['btnSubmit'])) {
         
         if ($realtorTableSuccess) {
             print '<h2 class="success-message">Realtor database successfully updated!</h2>';
+
+            // if the realtor table was successfully updated, insert/update the admin table
+            $sql = 'INSERT INTO tblAdmin SET ';
+            $sql .= 'pmkNetId = ?, ';
+            $sql .= 'fldPermissionLevel = ? ';
+            $sql .= 'ON DUPLICATE KEY UPDATE ';
+            $sql .= 'fldPermissionLevel = ?';
+            
+            $data = array();
+            $data[] = $realtorId;
+            $data[] = $permissionLevel;
+            // if realtor is no longer active set their permission level to 0
+            if ($isActive == 1) {
+                $data[] = $permissionLevel;
+            }
+            else {
+                $data[] = 0;
+            }
+
+            $adminTableSuccess = $thisDatabaseWriter->insert($sql, $data);
+
+            if ($adminTableSuccess) {}
+            else {
+                print '<p class="error-message">Oh no, there was a problem adding/updating admin record.</p>';
+                print '<p class="error-message">Contact your database administrator immediately.</p>';
+            }
         }
         else {
             print '<p class="error-message">Something went wrong, your change was not submitted properly.</p>';
@@ -184,7 +220,22 @@ if(isset($_POST['btnSubmit'])) {
             <?php
             print '<textarea id="txtProfile" name="txtProfile" rows="6" cols="50">' . $profile . '</textarea>';
             ?>
-        </p> 
+        </p>
+        <p>
+            <label for="dwnPermissionLevel">Permission Level</label>
+            <select id="dwnPermissionLevel" name="dwnPermissionLevel">
+            <?php
+            foreach (range(0, 4) as $number) {
+                if ($number == $permissionLevel) {
+                    print '<option value="' . $number . '" selected>' . $number . '</option>';
+                }
+                else {
+                    print '<option value="' . $number . '">' . $number . '</option>';
+                }
+            }
+            ?>
+            </select>
+        </p>
         <p>
             <label for="chkIsActive">Is Employee Active?</label>
             <?php 
