@@ -28,22 +28,23 @@ $thisDatabaseWriter = new DataBase('tmcglafl_writer', 'w', DATABASE_NAME);
 // get users netid
 $netId = htmlentities($_SERVER["REMOTE_USER"], ENT_QUOTES, "UTF-8");
 
-print $netId;
-
 // figure out if user is admin
 $adminSql = "SELECT pmkNetId, fldPermissionLevel FROM tblAdmin WHERE pmkNetId = ?";
 $data = array($netId);
-$adminCredential = $thisDatabaseReader->select($adminSql, $data);
+$adminRecord = $thisDatabaseReader->select($adminSql, $data);
 $isAdmin = false;
-if (sizeOf($adminCredential) != 0) {
+if (sizeOf($adminRecord) != 0) {
     $isAdmin = true;
 }
-
 // if user is not admin stop the script
 if (!($isAdmin)) {
     $message = "This page does not exist, please go away!";
     die($message);
 }
+else {
+    $adminPermissionLevel = $adminRecord[0]['fldPermissionLevel'];
+}
+
 ?>
 </head>
 

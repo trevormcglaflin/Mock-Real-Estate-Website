@@ -1,6 +1,11 @@
 <?php
 include 'top.php';
 
+if ($adminPermissionLevel < 1) {
+    $message = "You do not have permission to this page!";
+    die($message);
+}
+
 $sql = 'SELECT pmkHouseId, fldNickName ';
 $sql .= 'FROM tblHouse ';
 $sql .= 'ORDER BY pmkHouseId';

@@ -1,6 +1,11 @@
 <?php
 include 'top.php';
 
+if ($adminPermissionLevel < 2) {
+    $message = "You do not have permission to this page!";
+    die($message);
+}
+
 $purchaseId = (isset($_GET['pid'])) ? (int) htmlspecialchars($_GET['pid']) : 0;
 
 $sql = 'SELECT pmkPurchaseId, fpkBuyerEmail, fldNickName,  fldPrice, fldAddress, fldDistrict, fldSquareFeet, ';

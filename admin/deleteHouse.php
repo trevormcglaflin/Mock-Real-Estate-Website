@@ -1,6 +1,11 @@
 <?php
 include 'top.php';
 
+if ($adminPermissionLevel < 2) {
+    $message = "You do not have permission to this page!";
+    die($message);
+}
+
 // this sql block selects all houses that have not already been sold because
 // you should not be able to delete a house that has been sold
 $sql = 'SELECT pmkHouseId, fldNickName ';

@@ -1,6 +1,11 @@
 <?php
 include 'top.php';
 
+if ($adminPermissionLevel < 2) {
+    $message = "You do not have permission to this page!";
+    die($message);
+}
+
 $sql = 'SELECT pmkNetId ';
 $sql .= 'FROM tblRealtor ';
 $sql .= 'ORDER BY pmkNetId';

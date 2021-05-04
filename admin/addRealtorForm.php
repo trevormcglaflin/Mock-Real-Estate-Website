@@ -1,6 +1,11 @@
 <?php
 include 'top.php';
 
+if ($adminPermissionLevel < 2) {
+    $message = "You do not have permission to this page!";
+    die($message);
+}
+
 $realtorId = (isset($_GET['rid'])) ? htmlspecialchars($_GET['rid']) : "";
 
 $sql = 'SELECT pmkNetId, fldFirstName, fldLastName, fldRealtorEmail, fldPhoneNumber, ';

@@ -1,6 +1,11 @@
 <?php
 include 'top.php';
 
+if ($adminPermissionLevel < 2) {
+    $message = "You do not have permission to this page!";
+    die($message);
+}
+
 $houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 
 // if a house has been sold, you can not delete it from database
