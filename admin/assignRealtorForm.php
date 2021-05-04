@@ -9,18 +9,19 @@ if ($adminPermissionLevel < 3) {
 $houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 
 // if a house has been sold, you can not delete it from database
-$sql = 'SELECT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';
-$sql .= 'fldSquareFeet, fldDateListed, fldNickName, fldImageUrl ';
-$sql .= 'FROM tblHouse ';
-$sql .= 'LEFT JOIN tblBuyerHouse ON pmkHouseId = fpkHouseId ';
-$sql .= 'WHERE fpkHouseId IS NULL AND ';
-$sql .= 'pmkHouseId = ? ';
+$sql = 'SELECT pmkHouseId, fldNickName, fldImageUrl, fpkNetId ';
+$sql .= 'FROM tblBuyerHouse ';
+$sql .= 'RIGHT JOIN tblHouse ON tblBuyerHouse.fpkHouseId = tblHouse.pmkHouseId ';
+$sql .= 'JOIN tblHouseRealtor ON tblHouse.pmkHouseID = tblHouseRealtor.fpkHouseId ';
+$sql .= 'WHERE tblBuyerHouse.fpkHouseId IS NULL AND tblHouse.pmkHouseId = ?';
 
 $data = array($houseId);
+
 $houses = $thisDatabaseReader->select($sql, $data);
 
 if (sizeof($houses) > 0) {
     $house = $houses[0];
+    $realtorId = $house['fpkNetId'];
 }
 else {
     $house = NULL;
@@ -52,12 +53,12 @@ if(isset($_POST['btnSubmit'])) {
         $saveData = false;
     }
 
-    // check to see if realtor id exists
+    // check to see if realtor id exists in realtor table
     $sql = 'SELECT pmkNetId FROM tblRealtor ';
     $sql .= 'WHERE pmkNetId = ?';
     $data = array($realtorId);
     $realtors = $thisDatabaseReader->select($sql, $data);
-    if (sizeof($realtors) == 0) {
+    if (sizeof($realtorId) == 0) {
         print '<p class="mistake">Uh oh, that realtor net id does not exist!.</p>';
         $saveData = false;
     }
@@ -109,7 +110,12 @@ if($houseId != 0) {
     print '<label for="dwnRealtorId">New House Assignee</label>';
     print '<select id="dwnRealtorId" name="dwnRealtorId">';
     foreach ($realtors as $realtor) {
-        print '<option value="' . $realtor['pmkNetId'] . '">' . $realtor['pmkNetId'] . '</option>';
+        if ($realtor['pmkNetId'] == $realtorId) {
+            print '<option value="' . $realtor['pmkNetId'] . '" selected>' . $realtor['pmkNetId'] . '</option>';
+        }
+        else {
+            print '<option value="' . $realtor['pmkNetId'] . '">' . $realtor['pmkNetId'] . '</option>';
+        }
     }
     print '</select>';
     print '<input type="hidden" id="hdnHouseId" name="hdnHouseId" value="' . $houseId . '">'; 
