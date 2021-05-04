@@ -42,5 +42,4 @@
         print'activePage';
     }
     ?>" href="deletePurchase.php">Cancel Purchase</a>
-
 </nav>

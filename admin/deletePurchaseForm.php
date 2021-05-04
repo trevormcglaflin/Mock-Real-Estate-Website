@@ -1,12 +1,6 @@
 <?php
 include 'top.php';
 
-// if user is not the admin, prevent access
-//if (!($isAdmin)) {
-    //$message = "This page does not exist, please go away!";
-    //die($message);
-//}
-
 $purchaseId = (isset($_GET['pid'])) ? (int) htmlspecialchars($_GET['pid']) : 0;
 
 $sql = 'SELECT pmkPurchaseId, fpkBuyerEmail, fldNickName,  fldPrice, fldAddress, fldDistrict, fldSquareFeet, ';

@@ -1,12 +1,6 @@
 <?php
 include 'top.php';
 
-// if user is not the admin, prevent access
-//if (!($isAdmin)) {
-    //$message = "This page does not exist, please go away!";
-    //die($message);
-//}
-
 $houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 
 // if a house has been sold, you can not delete it from database

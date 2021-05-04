@@ -1,14 +1,6 @@
 <?php
 include 'top.php';
 
-// if user is not admin stop the script
-//if (!($isAdmin)) {
-    //$message = "This page does not exist, please go away!";
-    //die($message);
-//}
-
-$netId = 'tmcglafl';
-
 $houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 
 $sql = 'SELECT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';

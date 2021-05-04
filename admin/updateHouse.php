@@ -1,11 +1,5 @@
 <?php
 include 'top.php';
-// if user is not admin stop the script
-//if (!($isAdmin)) {
-    //$message = "This page does not exist, please go away!" . $netId;
-
-    //die($message);
-//}
 
 $sql = 'SELECT pmkHouseId, fldNickName ';
 $sql .= 'FROM tblHouse ';

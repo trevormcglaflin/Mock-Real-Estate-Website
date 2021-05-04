@@ -1,15 +1,7 @@
 <?php
 include 'top.php';
 
-// if user is not admin stop the script
-//if (!($isAdmin)) {
-    //$message = "This page does not exist, please go away!";
-    //die($message);
-//}
-
-$realtorId = $_GET['rid'];
-// TODO : make it so url param is properly validated
-//$realtorId = (isset($_GET['rid'])) ? htmlspecialchars($_GET['rid']) : "";
+$realtorId = (isset($_GET['rid'])) ? htmlspecialchars($_GET['rid']) : "";
 
 $sql = 'SELECT pmkNetId, fldFirstName, fldLastName, fldRealtorEmail, fldPhoneNumber, ';
 $sql .= 'fldProfile, fldIsActive ';

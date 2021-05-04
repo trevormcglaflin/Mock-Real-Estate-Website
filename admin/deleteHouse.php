@@ -1,15 +1,8 @@
 <?php
 include 'top.php';
-// if user is not admin stop the script
-//if (!($isAdmin)) {
-    //$message = "This page does not exist, please go away!" . $netId;
-
-    //die($message);
-//}
 
 // this sql block selects all houses that have not already been sold because
 // you should not be able to delete a house that has been sold
-
 $sql = 'SELECT pmkHouseId, fldNickName ';
 $sql .= 'FROM tblHouse ';
 $sql .= 'LEFT JOIN tblBuyerHouse ON pmkHouseId = fpkHouseId ';

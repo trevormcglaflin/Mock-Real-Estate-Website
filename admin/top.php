@@ -31,7 +31,7 @@ $netId = htmlentities($_SERVER["REMOTE_USER"], ENT_QUOTES, "UTF-8");
 print $netId;
 
 // figure out if user is admin
-$adminSql = "SELECT pmkNetId FROM tblAdmin WHERE pmkNetId = ?";
+$adminSql = "SELECT pmkNetId, fldPermissionLevel FROM tblAdmin WHERE pmkNetId = ?";
 $data = array($netId);
 $adminCredential = $thisDatabaseReader->select($adminSql, $data);
 $isAdmin = false;
