@@ -131,7 +131,7 @@ if(isset($_POST['btnSubmit'])) {
             $mailMessage .= 'background-color: ghostwhite;padding: 10px;">';
             $mailMessage .= '<h2>We have processed the transaction!</h2>';
             $mailMessage .= '<p><b>Transaction Information</b></p>';
-            $mailMessage .= '<p>Price Paid: ' . $price . '</p>';
+            $mailMessage .= '<p>Price Paid: $' . number_format($price) . '</p>';
             $mailMessage .= '<p>Transaction Date:' . $dateOfPurchase[0]['fldPurchaseDate'] . '</p>';
             $mailMessage .= '<p>From all of us at McGlaflin Crib Co., we appreciate your business!</p>';
             $mailMessage .= '</section>';
@@ -192,7 +192,7 @@ if($purchaseId != 0) {
         print '<figure><img src=../images/' . $purchase['fldImageUrl'] . ' alt=housePic></figure>';
         print nl2br($purchase['fldDescription']);
         print '<h3><b>Price</b></h3>';
-        print $purchase['fldPrice'];
+        print number_format($purchase['fldPrice']);
         print '<h3><b>Address</b></h3>';
         print $purchase['fldAddress'];
         print '<h3><b>District</b></h3>';

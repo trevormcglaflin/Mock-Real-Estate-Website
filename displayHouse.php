@@ -23,7 +23,7 @@ if(sizeof($houses) > 0) {
         print '<a class="button" href="purchaseHouse.php?hid=' . $house['pmkHouseId'] . '">Buy ' . $house['fldNickName'] . '!</a><br>';
         print '<section class="house-block">';
         print '<p>Address: ' . $house['fldAddress'] . '</p>';
-        print '<p>Price: ' . $house['fldPrice'] . '</p>';
+        print '<p>Price: ' . number_format($house['fldPrice']) . '</p>';
         print '<p>District: ' . $house['fldDistrict'] . '</p>';
         print '<p>Square Feet: ' . $house['fldSquareFeet'] . '</p>';
         print '</section>';

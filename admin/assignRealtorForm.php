@@ -130,7 +130,7 @@ if($houseId != 0) {
         print '<figure><img src=../images/' . $house['fldImageUrl'] . ' alt=housePic></figure>';
         print nl2br($house['fldDescription']);
         print '<h3><b>Price</b></h3>';
-        print $house['fldPrice'];
+        print number_format($house['fldPrice']);
         print '<h3><b>Address</b></h3>';
         print $house['fldAddress'];
         print '<h3><b>District</b></h3>';

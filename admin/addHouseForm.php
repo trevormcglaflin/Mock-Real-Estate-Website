@@ -228,7 +228,7 @@ if(isset($_POST['btnSubmit'])) {
 <main>
     <form action="<?php print PHP_SELF; ?>" id="addHouseForm" method="post" enctype="multipart/form-data">
         <p>
-            <label for="txtPrice">Price</label>
+            <label for="txtPrice">Price $</label>
             <input type="text" value="<?php print $price; ?>" name="txtPrice" id="txtPrice">
         </p>
         <p>
