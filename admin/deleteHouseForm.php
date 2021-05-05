@@ -9,11 +9,11 @@ if ($adminPermissionLevel < 3) {
 $houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 
 // if a house has been sold, you can not delete it from database
-$sql = 'SELECT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';
+$sql = 'SELECT DISTINCT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';
 $sql .= 'fldSquareFeet, fldDateListed, fldNickName, fldImageUrl ';
 $sql .= 'FROM tblHouse ';
 $sql .= 'LEFT JOIN tblBuyHouse ON pmkHouseId = fpkHouseId ';
-$sql .= 'WHERE fpkHouseId IS NULL AND ';
+$sql .= 'WHERE (fpkHouseId IS NULL OR fldPurchased = 0) AND ';
 $sql .= 'pmkHouseId = ? ';
 
 $data = array($houseId);

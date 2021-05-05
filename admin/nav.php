@@ -38,10 +38,10 @@
     }
     ?>" href="houseToAssign.php">Re-Assign House</a>
     <a class="<?php
-    if (PATH_PARTS['filename'] == "admin\delete-purchase") {
+    if (PATH_PARTS['filename'] == "admin\purchase-status") {
         print'activePage';
     }
-    ?>" href="deletePurchase.php">Cancel Purchase</a>
+    ?>" href="purchaseStatus.php">Purchase Statuses</a>
     <a class="<?php
     if (PATH_PARTS['filename'] == "admin\performance-report") {
         print'activePage';

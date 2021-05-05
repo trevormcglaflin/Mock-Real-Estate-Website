@@ -16,7 +16,6 @@ $sql .= 'WHERE fpkHouseId IS NULL OR fldPending = 0';
 $data = '';
 $houses = $thisDatabaseReader->select($sql, $data);
 ?>
-
 <main>
 <?php
 if(is_array($houses)){

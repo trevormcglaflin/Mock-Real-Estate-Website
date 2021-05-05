@@ -9,7 +9,7 @@ $houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 
 // get house info
 // this sql makes sure only lets houses that are still for sale and are assigned a realtor to be purchased
-$sql = 'SELECT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';
+$sql = 'SELECT DISTINCT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';
 $sql .= 'fldSquareFeet, fldNickName, fldImageUrl ';
 $sql .= 'FROM tblBuyHouse ';
 $sql .= 'RIGHT JOIN tblHouse ON tblBuyHouse.fpkHouseId = tblHouse.pmkHouseId ';
@@ -33,7 +33,6 @@ $firstName = "";
 $lastName = "";
 $phoneNumber = "";
 $message = "";
-$intentToBuy = 1;
 
 $saveData = true;
 
@@ -70,9 +69,6 @@ if(isset($_POST['btnSubmit'])) {
     $lastName = filter_var($_POST['txtLastName'], FILTER_SANITIZE_STRING);
     $phoneNumber = filter_var($_POST['txtPhoneNumber'], FILTER_SANITIZE_STRING);
     $message = filter_var($_POST['txtMessage'], FILTER_SANITIZE_STRING);
-    
-    // TODO: sanitize this, for some reason the getData function doesn't work
-    $intentToBuy = (int) getData('chkIntentToBuy');
     $houseId = (int) getData('hdnHouseId');
 
     //validate data
@@ -96,11 +92,6 @@ if(isset($_POST['btnSubmit'])) {
         $saveData = false;
     }
 
-    if ($intentToBuy != 0 && $intentToBuy != 1) {
-        print '<p class="mistake">Intention to buy value is invalid.</p>';
-        $saveData = false;
-    }
-
     if ($houseId < 0) {
         print '<p class="mistake">Hidden house id value is invalid.</p>';
         $saveData = false;
@@ -108,25 +99,19 @@ if(isset($_POST['btnSubmit'])) {
     
     if ($saveData) {
         // table BuyerHouse
-        // only insert into buyerHouse if intentToBuy is true
-        if ($intentToBuy == 1) {
-            $sql = 'INSERT INTO tblBuyHouse SET ';
-            $sql .= 'fpkBuyerEmail = ?, ';
-            $sql .= 'fpkHouseId = ?, ';
-            $sql .= 'fldPending = ? ';
+        $sql = 'INSERT INTO tblBuyHouse SET ';
+        $sql .= 'fpkBuyerEmail = ?, ';
+        $sql .= 'fpkHouseId = ?, ';
+        $sql .= 'fldMessage = ? ';
 
-            $data = array();
-            $data[] = $email;
-            $data[] = $houseId;
-            $data[] = $intentToBuy;
+        $data = array();
+        $data[] = $email;
+        $data[] = $houseId;
+        $data[] = $message;
 
-            $buyerHouseTableSuccess = $thisDatabaseWriter->insert($sql, $data);
-        }
-        else {
-            $buyerHouseTableSuccess = true;
-        }
+        $buyerHouseTableSuccess = $thisDatabaseWriter->insert($sql, $data);
         
-        if (DEBUG) {
+       if (DEBUG) {
             print $thisDatabaseReader->displayQuery($sql, $data);
             print '<br>';
         }
@@ -137,35 +122,51 @@ if(isset($_POST['btnSubmit'])) {
         $sql2 .= 'pmkBuyerEmail = ?, ';
         $sql2 .= 'fldFirstName = ?, ';
         $sql2 .= 'fldLastName = ?, ';
-        $sql2 .= 'fldPhoneNumber = ?, ';
-        $sql2 .= 'fldMessage = ? ';
+        $sql2 .= 'fldPhoneNumber = ? ';
         $sql2 .= 'ON DUPLICATE KEY UPDATE ';
         $sql2 .= 'fldFirstName = ?, ';
         $sql2 .= 'fldLastName = ?, ';
-        $sql2 .= 'fldPhoneNumber = ?, ';
-        $sql2 .= 'fldMessage = ? ';
-
+        $sql2 .= 'fldPhoneNumber = ? ';
+        
         $data2 = array();
         $data2[] = $email;
         $data2[] = $firstName;
         $data2[] = $lastName;
         $data2[] = $phoneNumber;
-        $data2[] = $message;
         $data2[] = $firstName;
         $data2[] = $lastName;
         $data2[] = $phoneNumber;
-        $data2[] = $message;
         
         $buyerTableSuccess = $thisDatabaseWriter->insert($sql2, $data2);
 
-        
         if ($buyerTableSuccess && $buyerHouseTableSuccess) {
-            // message depends on customers intent to buy
-            if ($intentToBuy == 1) {
-                print '<h2 class="success-message">We have been informed of your interest in buying from us!</h2>';
-            }
-            else {
-                print '<h2 class="success-message">The agency has received your message!</h2>';
+            print '<h2 class="success-message">The agency has received your message, and will be in touch shortly!</h2>';
+            
+            // send mail to potential buyer with form info
+            $to = $email;
+            $from = 'The McGlaflin Crib Co. Family <tmcglafl@uvm.edu>';
+            $subject = 'We have received your message!';
+            
+            $mailMessage = '<section style="font-family: Arial;';
+            $mailMessage .= 'color: grey;';
+            $mailMessage .= 'background-color: ghostwhite;padding: 10px;">';
+            $mailMessage .= '<h2>We appreciate your interest, welcome to the McGlaflin crib family!</h2>';
+            $mailMessage .= '<p>Here is your info that we recieved: </p>';
+            $mailMessage .= '<p>First Name: ' . $firstName . '</p>';
+            $mailMessage .= '<p>Last Name: ' . $lastName . '</p>';
+            $mailMessage .= '<p>Email: ' . $email . '</p>';
+            $mailMessage .= '<p>Phone Number: ' . $phoneNumber . '</p>';
+            $mailMessage .= '<p>Message</p>';
+            $mailMessage .= '<p>' . $message . '</p>';
+            $mailMessage .= '</section>';
+
+            $headers = "MIME-Version: 1.0\r\n";
+            $headers .= "Content-type: text/html; charset=utf-8\r\n";
+            $headers .= "From: " . $from . "\r\n";
+            $mailSent = mail($to, $subject, $mailMessage, $headers);
+
+            if ($mailSent) {
+                print '<h2 class="success-message">A copy has been emailed to you.</h2>';
             }
         }
         else {
@@ -204,23 +205,6 @@ if ($houseId != 0) {
     print '<label for="txtMessage">Message</label>';
     print '<textarea id="txtMessage" name="txtMessage" rows="6" cols="50">' . $message . '</textarea>';
     print '</p>'; 
-    print '</fieldset>';
-    print '<fieldset class="checkboxes">';
-    print '<p>';
-    print '<label for="chkIntentToBuy">Do you intend to purchase this house?</label>';
-    ?>
-    <p>
-    <label>
-    <input <?php if ($intentToBuy) print " checked "; ?>
-        id="chkIntentToBuy"
-        name="chkIntentToBuy"
-        tabindex="420"
-        type="checkbox"
-        value="1">Do you you intend to purchase this house?</label>
-    </p>
-    <?php
-    print '</p>';
-    print '<p><small>NOTE: checking this box will take the house off the market. A realtor from our agency will contact you within 24 hours.</small></p>';
     print '</fieldset>';
     print '<input type="hidden" id="hdnHouseId" name="hdnHouseId" value="' . $houseId . '">'; 
     print '<fieldset>';

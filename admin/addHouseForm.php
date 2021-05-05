@@ -143,7 +143,8 @@ if(isset($_POST['btnSubmit'])) {
         $sql .= 'fldDistrict = ?, ';
         $sql .= 'fldSquareFeet = ?, ';
         $sql .= 'fldNickName = ?, ';
-        $sql .= 'fldImageUrl = ?';
+        $sql .= 'fldImageUrl = ?, ';
+        $sql .= 'fldDateListed = NOW()';
 
         $data = array();
         $data[] = $houseId;

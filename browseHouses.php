@@ -2,7 +2,7 @@
 include 'top.php';
 
 // select houses that have not been sold already, and are assigned to realtor
-$sql = 'SELECT pmkHouseId, fldNickName, fldImageUrl ';
+$sql = 'SELECT DISTINCT pmkHouseId, fldNickName, fldImageUrl ';
 $sql .= 'FROM tblBuyHouse ';
 $sql .= 'RIGHT JOIN tblHouse ON tblBuyHouse.fpkHouseId = tblHouse.pmkHouseId ';
 $sql .= 'JOIN tblHouseRealtor ON tblHouse.pmkHouseID = tblHouseRealtor.fpkHouseId ';

@@ -5,7 +5,7 @@ print '<p>House Id = ' . $houseId;
 
 // get house info
 // this sql only lets houses that are still for sale and are assigned a realtor to be viewed
-$sql = 'SELECT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';
+$sql = 'SELECT DISTINCT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';
 $sql .= 'fldSquareFeet, fldNickName, fldImageUrl ';
 $sql .= 'FROM tblBuyHouse ';
 $sql .= 'RIGHT JOIN tblHouse ON tblBuyHouse.fpkHouseId = tblHouse.pmkHouseId ';

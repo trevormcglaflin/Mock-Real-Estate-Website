@@ -8,10 +8,10 @@ if ($adminPermissionLevel < 3) {
 
 // this sql block selects all houses that have not already been sold because
 // you should not be able to delete a house that has been sold
-$sql = 'SELECT pmkHouseId, fldNickName ';
+$sql = 'SELECT DISTINCT pmkHouseId, fldNickName ';
 $sql .= 'FROM tblHouse ';
 $sql .= 'LEFT JOIN tblBuyHouse ON pmkHouseId = fpkHouseId ';
-$sql .= 'WHERE fpkHouseId IS NULL';
+$sql .= 'WHERE fpkHouseId IS NULL OR fldPurchased = 0';
 
 $data = '';
 $houses = $thisDatabaseReader->select($sql, $data);
@@ -19,7 +19,6 @@ $houses = $thisDatabaseReader->select($sql, $data);
 
 <main>
 <?php
-print $netId;
 if(is_array($houses)){
     $rowCount = 0;
     $rowClass = "even";

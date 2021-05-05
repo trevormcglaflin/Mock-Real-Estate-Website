@@ -140,7 +140,8 @@ if(isset($_POST['btnSubmit'])) {
         $sql .= 'fldPhoneNumber = ?, ';
         $sql .= 'fldProfile = ?, ';
         $sql .= 'fldIsActive = ?, ';
-        $sql .= 'fldProfilePicture = ? ';
+        $sql .= 'fldProfilePicture = ?, ';
+        $sql .= 'fldHireDate = NOW() ';
         $sql .= 'ON DUPLICATE KEY UPDATE ';
         $sql .= 'fldFirstName = ?, ';
         $sql .= 'fldLastName = ?, ';
