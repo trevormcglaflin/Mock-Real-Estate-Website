@@ -48,8 +48,8 @@
     }
     ?>" href="performanceReport.php">Performance Report</a>
     <a class="<?php
-    if (PATH_PARTS['filename'] == "admin\view-my-houses") {
+    if (PATH_PARTS['filename'] == "admin\realtor-report") {
         print'activePage';
     }
-    ?>" href="viewMyHouses.php">View My Houses</a>
+    ?>" href="realtorReport.php">Realtor Report</a>
 </nav>

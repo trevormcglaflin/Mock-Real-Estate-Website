@@ -65,8 +65,6 @@ if(isset($_POST['btnSubmit'])) {
     // display message
     if ($houseTableSuccess) {
         $deleteImage = shell_exec('rm ../images/' . $imageUrl);
-        print $imageUrl;
-        
         print '<h2 class="success-message">House record has been deleted!</h2>';
     }
     else {
