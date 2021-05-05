@@ -10,7 +10,7 @@ if ($adminPermissionLevel < 3) {
 // you should not be able to delete a house that has been sold
 $sql = 'SELECT pmkHouseId, fldNickName ';
 $sql .= 'FROM tblHouse ';
-$sql .= 'LEFT JOIN tblBuyerHouse ON pmkHouseId = fpkHouseId ';
+$sql .= 'LEFT JOIN tblBuyHouse ON pmkHouseId = fpkHouseId ';
 $sql .= 'WHERE fpkHouseId IS NULL';
 
 $data = '';

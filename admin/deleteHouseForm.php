@@ -12,7 +12,7 @@ $houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 $sql = 'SELECT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';
 $sql .= 'fldSquareFeet, fldDateListed, fldNickName, fldImageUrl ';
 $sql .= 'FROM tblHouse ';
-$sql .= 'LEFT JOIN tblBuyerHouse ON pmkHouseId = fpkHouseId ';
+$sql .= 'LEFT JOIN tblBuyHouse ON pmkHouseId = fpkHouseId ';
 $sql .= 'WHERE fpkHouseId IS NULL AND ';
 $sql .= 'pmkHouseId = ? ';
 

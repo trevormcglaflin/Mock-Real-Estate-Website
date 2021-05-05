@@ -42,4 +42,14 @@
         print'activePage';
     }
     ?>" href="deletePurchase.php">Cancel Purchase</a>
+    <a class="<?php
+    if (PATH_PARTS['filename'] == "admin\performance-report") {
+        print'activePage';
+    }
+    ?>" href="performanceReport.php">Performance Report</a>
+    <a class="<?php
+    if (PATH_PARTS['filename'] == "admin\view-my-houses") {
+        print'activePage';
+    }
+    ?>" href="viewMyHouses.php">View My Houses</a>
 </nav>

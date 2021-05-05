@@ -11,10 +11,10 @@ $houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 // this sql makes sure only lets houses that are still for sale and are assigned a realtor to be purchased
 $sql = 'SELECT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';
 $sql .= 'fldSquareFeet, fldNickName, fldImageUrl ';
-$sql .= 'FROM tblBuyerHouse ';
-$sql .= 'RIGHT JOIN tblHouse ON tblBuyerHouse.fpkHouseId = tblHouse.pmkHouseId ';
+$sql .= 'FROM tblBuyHouse ';
+$sql .= 'RIGHT JOIN tblHouse ON tblBuyHouse.fpkHouseId = tblHouse.pmkHouseId ';
 $sql .= 'JOIN tblHouseRealtor ON tblHouse.pmkHouseID = tblHouseRealtor.fpkHouseId ';
-$sql .= 'WHERE tblBuyerHouse.fpkHouseId IS NULL AND pmkHouseId = ? ';
+$sql .= 'WHERE (tblBuyHouse.fpkHouseId IS NULL OR tblBuyHouse.fldPurchased = 0) AND pmkHouseId = ? ';
 
 $data = array($houseId);
 $houses = $thisDatabaseReader->select($sql, $data);
@@ -72,7 +72,7 @@ if(isset($_POST['btnSubmit'])) {
     $message = filter_var($_POST['txtMessage'], FILTER_SANITIZE_STRING);
     
     // TODO: sanitize this, for some reason the getData function doesn't work
-    $intentToBuy = $_POST['chkIntentToBuy'];
+    $intentToBuy = (int) getData('chkIntentToBuy');
     $houseId = (int) getData('hdnHouseId');
 
     //validate data
@@ -110,13 +110,15 @@ if(isset($_POST['btnSubmit'])) {
         // table BuyerHouse
         // only insert into buyerHouse if intentToBuy is true
         if ($intentToBuy == 1) {
-            $sql = 'INSERT INTO tblBuyerHouse SET ';
+            $sql = 'INSERT INTO tblBuyHouse SET ';
             $sql .= 'fpkBuyerEmail = ?, ';
-            $sql .= 'fpkHouseId = ? ';
+            $sql .= 'fpkHouseId = ?, ';
+            $sql .= 'fldPending = ? ';
 
             $data = array();
             $data[] = $email;
             $data[] = $houseId;
+            $data[] = $intentToBuy;
 
             $buyerHouseTableSuccess = $thisDatabaseWriter->insert($sql, $data);
         }
@@ -206,12 +208,17 @@ if ($houseId != 0) {
     print '<fieldset class="checkboxes">';
     print '<p>';
     print '<label for="chkIntentToBuy">Do you intend to purchase this house?</label>';
-    if ($intentToBuy == 1) {
-        print '<input type="checkbox" name="chkIntentToBuy" id="chkIntentToBuy" value="' . $intentToBuy . '" checked>';
-    }
-    else {
-        print '<input type="checkbox" name="chkIntentToBuy" id="chkIntentToBuy" value ="' . $intentToBuy . '">';
-    }
+    ?>
+    <p>
+    <label>
+    <input <?php if ($intentToBuy) print " checked "; ?>
+        id="chkIntentToBuy"
+        name="chkIntentToBuy"
+        tabindex="420"
+        type="checkbox"
+        value="1">Do you you intend to purchase this house?</label>
+    </p>
+    <?php
     print '</p>';
     print '<p><small>NOTE: checking this box will take the house off the market. A realtor from our agency will contact you within 24 hours.</small></p>';
     print '</fieldset>';

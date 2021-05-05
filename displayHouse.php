@@ -7,10 +7,10 @@ print '<p>House Id = ' . $houseId;
 // this sql only lets houses that are still for sale and are assigned a realtor to be viewed
 $sql = 'SELECT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';
 $sql .= 'fldSquareFeet, fldNickName, fldImageUrl ';
-$sql .= 'FROM tblBuyerHouse ';
-$sql .= 'RIGHT JOIN tblHouse ON tblBuyerHouse.fpkHouseId = tblHouse.pmkHouseId ';
+$sql .= 'FROM tblBuyHouse ';
+$sql .= 'RIGHT JOIN tblHouse ON tblBuyHouse.fpkHouseId = tblHouse.pmkHouseId ';
 $sql .= 'JOIN tblHouseRealtor ON tblHouse.pmkHouseID = tblHouseRealtor.fpkHouseId ';
-$sql .= 'WHERE tblBuyerHouse.fpkHouseId IS NULL AND pmkHouseId = ? ';
+$sql .= 'WHERE (tblBuyHouse.fpkHouseId IS NULL OR tblBuyHouse.fldPurchased = 0) AND pmkHouseId = ? ';
 
 $data = array($houseId);
 $houses = $thisDatabaseReader->select($sql, $data);

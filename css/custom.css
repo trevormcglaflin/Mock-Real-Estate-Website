@@ -7,10 +7,12 @@ body{
     border: thin solid var(--main-color);
     background-color: var(--main-bg-color);
     color: var(--main-color);
-    max-width: 50em;
+    max-width: 60em;
     line-height: 1.3em;
     padding: 1%;
     margin: auto;
+    font-family:'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    color: darkslategrey;
 }
 
 html {
@@ -19,6 +21,7 @@ html {
 
 img {
     width: 400px;
+    border-radius: 5%;
 }
 
 #buyer-message {
@@ -152,11 +155,6 @@ footer{
     margin-right:auto;
 }
 
-.realtor-block {
-  background-color: lightgray;
-  opacity: 0.85;
-}
-
 .house-block {
   background-color: lightgray;
   opacity: 0.85;
@@ -186,4 +184,21 @@ textarea {
 
 .warning { 
   color: red;
+}
+
+/* contact page stuff */
+#contact-page {
+  width: 100%;
+  display: grid;
+  grid-gap: 50px;
+  grid-template-columns: 400px 300px;
+  
+}
+.realtor-info {
+   background-color: lightgray;
+   opacity: 0.85;
+}
+
+.realtor-picture img {
+  width: 300px;
 }

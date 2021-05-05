@@ -3,10 +3,10 @@ include 'top.php';
 
 // select houses that have not been sold already, and are assigned to realtor
 $sql = 'SELECT pmkHouseId, fldNickName, fldImageUrl ';
-$sql .= 'FROM tblBuyerHouse ';
-$sql .= 'RIGHT JOIN tblHouse ON tblBuyerHouse.fpkHouseId = tblHouse.pmkHouseId ';
+$sql .= 'FROM tblBuyHouse ';
+$sql .= 'RIGHT JOIN tblHouse ON tblBuyHouse.fpkHouseId = tblHouse.pmkHouseId ';
 $sql .= 'JOIN tblHouseRealtor ON tblHouse.pmkHouseID = tblHouseRealtor.fpkHouseId ';
-$sql .= 'WHERE tblBuyerHouse.fpkHouseId IS NULL ';
+$sql .= 'WHERE tblBuyHouse.fpkHouseId IS NULL OR tblBuyHouse.fldPurchased = 0 ';
 $sql .= 'ORDER BY tblHouse.fldPrice DESC';
 
 $data ='';

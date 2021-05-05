@@ -9,7 +9,7 @@ if ($adminPermissionLevel < 3) {
 $realtorId = (isset($_GET['rid'])) ? htmlspecialchars($_GET['rid']) : "";
 
 $sql = 'SELECT pmkNetId, fldFirstName, fldLastName, fldRealtorEmail, fldPhoneNumber, ';
-$sql .= 'fldProfile, fldIsActive ';
+$sql .= 'fldProfile, fldIsActive, fldProfilePicture ';
 $sql .= 'FROM tblRealtor ';
 $sql .= 'WHERE pmkNetId = ?';
 $sql .= 'ORDER BY pmkNetId';
@@ -36,6 +36,7 @@ if (!is_null($realtor) && sizeof($adminRecord) != 0) {
     $phoneNumber = $realtor['fldPhoneNumber'];
     $profile = $realtor['fldProfile'];
     $isActive = $realtor['fldIsActive'];
+    $profilePicture = $realtor['fldProfilePicture'];
     $permissionLevel = $adminRecord[0]['fldPermissionLevel'];
 }
 else {
@@ -46,6 +47,7 @@ else {
     $phoneNumber = "";
     $profile = "";
     $isActive = 1;
+    $profilePicture = "";
     $permissionLevel = 0;
 }
 
@@ -64,6 +66,8 @@ function getData($field) {
 }
 
 if(isset($_POST['btnSubmit'])) {
+    // for image submission
+    include 'upload.php';
     if(DEBUG) {
         print '<p>POST array:<p><pre>';
         print_r($_POST);
@@ -80,9 +84,14 @@ if(isset($_POST['btnSubmit'])) {
     // TODO: santize this properly
     $isActive = (int) getData('chkIsActive');
     $permissionLevel = (int) getData('dwnPermissionLevel');
+    $profilePicture = filter_var($fileName, FILTER_SANITIZE_STRING);
     
     
     // validate data
+    // this is based on the file upload
+    if ($uploadOk == 0) {
+        $saveData = false;
+    }
     if (strlen($realtorId) > 10) {
         print '<p class="mistake">Please enter a valid realtor id (10 characters or less).</p>';
         $saveData = false;
@@ -122,7 +131,7 @@ if(isset($_POST['btnSubmit'])) {
     }
 
     if ($saveData) {
-        // insert record (or update if key already exists)
+       // insert record (or update if key already exists)
         $sql = 'INSERT INTO tblRealtor SET ';
         $sql .= 'pmkNetId = ?, ';
         $sql .= 'fldFirstName = ?, ';
@@ -130,14 +139,16 @@ if(isset($_POST['btnSubmit'])) {
         $sql .= 'fldRealtorEmail = ?, ';
         $sql .= 'fldPhoneNumber = ?, ';
         $sql .= 'fldProfile = ?, ';
-        $sql .= 'fldIsActive = ? ';
+        $sql .= 'fldIsActive = ?, ';
+        $sql .= 'fldProfilePicture = ? ';
         $sql .= 'ON DUPLICATE KEY UPDATE ';
         $sql .= 'fldFirstName = ?, ';
         $sql .= 'fldLastName = ?, ';
         $sql .= 'fldRealtorEmail = ?, ';
         $sql .= 'fldPhoneNumber = ?, ';
         $sql .= 'fldProfile = ?, ';
-        $sql .= 'fldIsActive = ?';
+        $sql .= 'fldIsActive = ?, ';
+        $sql .= 'fldProfilePicture = ?';
 
 
         $data = array();
@@ -148,12 +159,14 @@ if(isset($_POST['btnSubmit'])) {
         $data[] = $phoneNumber;
         $data[] = $profile;
         $data[] = $isActive;
+        $data[] = $profilePicture;
         $data[] = $firstName;
         $data[] = $lastName;
         $data[] = $realtorEmail;
         $data[] = $phoneNumber;
         $data[] = $profile;
         $data[] = $isActive;
+        $data[] = $profilePicture;
             
         # insert/update
         $realtorTableSuccess = $thisDatabaseWriter->insert($sql, $data);
@@ -189,12 +202,18 @@ if(isset($_POST['btnSubmit'])) {
         }
         else {
             print '<p class="error-message">Something went wrong, your change was not submitted properly.</p>';
+            $deleteImage = shell_exec('rm ../images/' . $fileName);
+            print '<p class="error-message">Image has been removed from directory.</p>';
         }
+    }
+    // if form validation failed remove the image from directory
+    else {
+        $deleteImage = shell_exec('rm ../images/' . $fileName);
     }
 }
 ?>
 <main>
-    <form action="<?php print PHP_SELF; ?>" id="addRealtorForm" method="post">
+    <form action="<?php print PHP_SELF; ?>" id="addRealtorForm" method="post" enctype="multipart/form-data">
         <p>
             <label for="txtRealtorId">Realtor Net ID</label>
             <input type="text" value="<?php print $realtorId; ?>" name="txtRealtorId" id="txtRealtorId">
@@ -237,16 +256,18 @@ if(isset($_POST['btnSubmit'])) {
             </select>
         </p>
         <p>
-            <label for="chkIsActive">Is Employee Active?</label>
-            <?php 
-            if ($isActive == 1) {
-                print '<input type="checkbox" name="chkIsActive" id="chkIsActive" value="' . $isActive . '" checked>';
-            }
-            else {
-                print '<input type="checkbox" name="chkIsActive" id="chkIsActive" value ="' . $isActive . '">';
-            }
-            ?>
+            <label>
+            <input <?php if ($isActive) print " checked "; ?>
+                id="chkIsActive"
+                name="chkIsActive"
+                tabindex="420"
+                type="checkbox"
+                value="1">Is Employee Active?</label>
         </p>
+        <p>
+             Upload Realtor Profile Picture:
+            <input type="file" name="fileToUpload" id="fileToUpload">
+        </p> 
         <fieldset>
             <p><input type="submit" value="Insert Record" tabindex="999" name="btnSubmit"></p>
         </fieldset>

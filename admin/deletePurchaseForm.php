@@ -11,7 +11,7 @@ $purchaseId = (isset($_GET['pid'])) ? (int) htmlspecialchars($_GET['pid']) : 0;
 $sql = 'SELECT pmkPurchaseId, fpkBuyerEmail, fldNickName,  fldPrice, fldAddress, fldDistrict, fldSquareFeet, ';
 $sql .= 'fldNickName, fldImageUrl ';
 $sql .= 'FROM tblHouse ';
-$sql .= 'JOIN tblBuyerHouse ON pmkHouseId = fpkHouseId ';
+$sql .= 'JOIN tblBuyHouse ON pmkHouseId = fpkHouseId ';
 $sql .= 'WHERE pmkPurchaseId = ?';
 
 $data = array($purchaseId);
@@ -46,7 +46,7 @@ if(isset($_POST['btnSubmit'])) {
     // delete record if field is valid
     if ($saveData) {
         // now, delete record from BuyerHouse
-        $sql = 'DELETE FROM tblBuyerHouse ';
+        $sql = 'DELETE FROM tblBuyHouse ';
         $sql .= 'WHERE pmkPurchaseId = ?';
         $data = array();
         $data[] = $purchaseId;

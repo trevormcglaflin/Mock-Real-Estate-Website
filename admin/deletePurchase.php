@@ -11,7 +11,7 @@ if ($adminPermissionLevel < 3) {
 
 $sql = 'SELECT pmkPurchaseId, fldNickName ';
 $sql .= 'FROM tblHouse ';
-$sql .= 'JOIN tblBuyerHouse ON pmkHouseId = fpkHouseId ';
+$sql .= 'JOIN tblBuyHouse ON pmkHouseId = fpkHouseId ';
 $sql .= 'ORDER BY pmkPurchaseId';
 
 $data = '';
