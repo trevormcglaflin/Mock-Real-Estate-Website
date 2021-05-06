@@ -43,10 +43,10 @@
     }
     ?>" href="purchaseStatus.php">Purchase Statuses</a>
     <a class="<?php
-    if (PATH_PARTS['filename'] == "admin\performance-report") {
+    if (PATH_PARTS['filename'] == "admin\company-report") {
         print'activePage';
     }
-    ?>" href="performanceReport.php">Performance Report</a>
+    ?>" href="performanceReport.php">Company Report</a>
     <a class="<?php
     if (PATH_PARTS['filename'] == "admin\realtor-report") {
         print'activePage';

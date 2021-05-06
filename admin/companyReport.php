@@ -1,20 +1,19 @@
 <?php
 include 'top.php';
 
-if ($adminPermissionLevel < 2) {
+if ($adminPermissionLevel < 3) {
     $message = "You do not have permission to this page!";
     die($message);
 }
 
-// select all houses that this realtor has sold
+// select all houses that agency has sold
 $sql = 'SELECT COUNT(*), SUM(fldPrice), AVG(DATEDIFF(fldPurchaseDate, fldDateListed)) ';
 $sql .= 'FROM tblBuyHouse ';
 $sql .= 'RIGHT JOIN tblHouse ON tblBuyHouse.fpkHouseId = tblHouse.pmkHouseId ';
 $sql .= 'JOIN tblHouseRealtor ON tblHouse.pmkHouseID = tblHouseRealtor.fpkHouseId ';
-$sql .= 'WHERE tblBuyHouse.fldPurchased = 1 AND tblHouseRealtor.fpkNetId = ?';
+$sql .= 'WHERE tblBuyHouse.fldPurchased = 1';
 
-$data = array($netId);
-$allTimeHouses = $thisDatabaseReader->select($sql, $data);
+$allTimeHouses = $thisDatabaseReader->select($sql);
 
 // now look at performance in last 365 days 
 $sql = 'SELECT COUNT(*), SUM(fldPrice), AVG(DATEDIFF(fldPurchaseDate, fldDateListed)) ';
@@ -22,10 +21,9 @@ $sql .= 'FROM tblBuyHouse ';
 $sql .= 'RIGHT JOIN tblHouse ON tblBuyHouse.fpkHouseId = tblHouse.pmkHouseId ';
 $sql .= 'JOIN tblHouseRealtor ON tblHouse.pmkHouseID = tblHouseRealtor.fpkHouseId ';
 $sql .= 'WHERE YEAR(tblBuyHouse.fldPurchaseDate) = YEAR(CURDATE()) ';
-$sql .= 'AND tblBuyHouse.fldPurchased = 1 ';
-$sql .=  'AND tblHouseRealtor.fpkNetId = ?';
+$sql .= 'AND tblBuyHouse.fldPurchased = 1';
 
-$currentYearHouses = $thisDatabaseReader->select($sql, $data);
+$currentYearHouses = $thisDatabaseReader->select($sql);
 ?>
 
 <main>
@@ -49,4 +47,3 @@ print '</section>';
 <?php
     include "footer.php";
 ?>
-
