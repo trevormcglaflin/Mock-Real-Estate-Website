@@ -40,6 +40,10 @@ img {
   float: center;
 }
 
+#portfolio-note {
+  width: 60%;
+}
+
 #buyer-message {
     color: green;
 }
@@ -84,6 +88,7 @@ footer{
     overflow: hidden;
     background-color: #333;
     font-family: Arial;
+    width: 90%;
   }
   
   
@@ -262,7 +267,6 @@ textarea {
   display: grid;
   grid-gap: 50px;
   grid-template-columns: 400px 300px;
-  
 }
 .realtor-info {
    background-color: lightgray;

@@ -1,7 +1,37 @@
-nav a {
-    padding: 0.2%;
+#contact-page {
+    grid-template-columns: 300px 300px;
+  }
+
+.house-browsing {
+    grid-template-columns: 400px 200px;
+    grid-gap: 30px;
 }
 
-nav a:hover {
-    background-color: rgb(80, 194, 80);
+.house-block {
+    padding: 5px;
+    float: right;
 }
+
+.house-pic {
+    float: left;
+}
+
+
+img {
+    width: 300px;
+    float: left;
+}
+
+.portfolio {
+    display: grid;
+    grid-gap: 50px;
+}
+
+.portfolio-image {
+    width: 50%;
+    margin: auto;
+}
+
+
+
+

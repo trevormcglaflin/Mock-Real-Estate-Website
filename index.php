@@ -13,18 +13,19 @@ $houses = $thisDatabaseReader->select($sql, $data);
 <main>
 <?php
 print '<h2>Featured Houses From Our Portfolio</h2>';
+print '<section class="portfolio">';
 $houseCount = 0;
 if(is_array($houses)){
     foreach($houses as $house){
         print '<figure class="portfolio-image">';
         print '<img alt="' . $house['fldNickName'] . '" src="images/' 
         . $house['fldImageUrl'] . '">';
-        print '<figcaption>' . $house['fldNickName'] . '</figcaption>';
         print '</figure>';
     }
 }
 
-print '<p>Note: these houses are no longer on market (go to browse houses tab to view houses currently for sale)';
+print '<p id="portfolio-note">Note: these houses are no longer on market (go to browse houses tab to view houses currently for sale)';
+print '</section>';
 ?>
 </main>
 
