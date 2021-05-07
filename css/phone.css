@@ -1,7 +1,6 @@
 nav a{
     display: block;
-    padding: 0.5%;
-    background-color: rgb(202, 91, 202)
+    width: 80%;
 }
 
 nav {
@@ -12,3 +11,43 @@ nav {
 h1, h2 {
     font-size: large;
 }
+
+.portfolio-image {
+    width: 50%;
+    margin-left: 5%;
+}
+
+.about-section {
+    width: 90%;
+}
+
+#contact-page {
+    grid-template-columns: 90%;
+    grid-gap: 20px;
+}
+.realtor-info {
+    margin: auto;
+    width: 90%;
+}
+
+.house-browsing {
+    grid-template-columns: 90%;
+    grid-gap: 20px;
+}
+
+.house-block {
+    margin-left: 35px;
+    width:300px;
+}
+.house-pic {
+    width: 300px;
+}
+.report-block {
+    width: 90%;
+}
+
+.even, .odd {
+    width: 100%;
+}
+
+

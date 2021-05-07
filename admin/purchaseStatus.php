@@ -42,6 +42,7 @@ if(is_array($purchases)){
 }
 print '</section>';
 
+
 // pending orders
 print '<section class="purchase-section"><h2>Pending Orders</h2>';
 if(is_array($purchases)){
