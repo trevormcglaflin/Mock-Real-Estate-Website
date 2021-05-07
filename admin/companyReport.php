@@ -28,19 +28,22 @@ $currentYearHouses = $thisDatabaseReader->select($sql);
 
 <main>
 <?php
-print '<section id="realtor-all-time">';
-print '<h2>Sales Performance - Current Sales Cycle</h2>';
-print '<p>Total Revenue: $' . number_format($currentYearHouses[0]['SUM(fldPrice)']) . '</p>';
-print '<p>Houses Sold: ' . $currentYearHouses[0]['COUNT(*)'] . '</p>';
-print '<p>Average House Turnover: ' . number_format($currentYearHouses[0]['AVG(DATEDIFF(fldPurchaseDate, fldDateListed))']) . ' days</p>';
-print '</section>';
-
-print '<section id="realtor-all-time">';
-print '<h2>Sales Performance - All Time</h2>';
-print '<p>Total Revenue: $' . number_format($allTimeHouses[0]['SUM(fldPrice)']) . '</p>';
-print '<p>Houses Sold: ' . $allTimeHouses[0]['COUNT(*)'] . '</p>';
-print '<p>Average House Turnover: ' . number_format($allTimeHouses[0]['AVG(DATEDIFF(fldPurchaseDate, fldDateListed))']) . ' days</p>';
-print '</section>';
+if (sizeof($currentYearHouses) > 0) {
+    print '<section class="report-block">';
+    print '<p>Sales Performance - Current Sales Cycle</p>';
+    print '<p>Total Revenue: $' . number_format($currentYearHouses[0]['SUM(fldPrice)']) . '</p>';
+    print '<p>Houses Sold: ' . $currentYearHouses[0]['COUNT(*)'] . '</p>';
+    print '<p>Average House Turnover: ' . number_format($currentYearHouses[0]['AVG(DATEDIFF(fldPurchaseDate, fldDateListed))']) . ' days</p>';
+    print '</section>';
+}
+if (sizeof($allTimeHouses) > 0) {
+    print '<section class="report-block">';
+    print '<p>Sales Performance - All Time</p>';
+    print '<p>Total Revenue: $' . number_format($allTimeHouses[0]['SUM(fldPrice)']) . '</p>';
+    print '<p>Houses Sold: ' . $allTimeHouses[0]['COUNT(*)'] . '</p>';
+    print '<p>Average House Turnover: ' . number_format($allTimeHouses[0]['AVG(DATEDIFF(fldPurchaseDate, fldDateListed))']) . ' days</p>';
+    print '</section>';
+}
 ?>
 </main>
 

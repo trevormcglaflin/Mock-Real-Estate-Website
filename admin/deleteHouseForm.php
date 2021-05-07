@@ -30,6 +30,8 @@ else {
 // initialize save data to true
 $saveData = true;
 
+print '<main class="form-page">';
+
 function getData($field) {
     if (!isset($_POST[$field])) {
        $data = "";
@@ -42,6 +44,7 @@ function getData($field) {
 }
 
 if(isset($_POST['btnSubmit'])) {
+    print '<section class="form-message">';
     // sanitize
     $houseId = (int) getData('hdnHouseId');
     $imageUrl = filter_var($_POST['hdnImageUrl'], FILTER_SANITIZE_STRING);
@@ -63,7 +66,6 @@ if(isset($_POST['btnSubmit'])) {
         $houseTableSuccess = $thisDatabaseWriter->delete($sql, $data);
     }
     // display message
-    print '<section class="form-message">';
     if ($houseTableSuccess) {
         $deleteImage = shell_exec('rm ../images/' . $imageUrl);
         print '<h2 class="success-message">House record has been deleted!</h2>';
@@ -76,9 +78,6 @@ if(isset($_POST['btnSubmit'])) {
     }
     print '</section>';
 }
-?>
-<main class="form-page">
-<?php
 // only show delete button if the record exists
 if($houseId != 0) {
     print '<form action="' .PHP_SELF . '" id="deleteHouseForm" method="post">';

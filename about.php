@@ -2,6 +2,7 @@
 include 'top.php';
 ?>
 <main>
+    <section class="about-section">
     <h3><b>Founding Story</b></h3>
     <p>
         McGlaflin Crib Co. started in 2020 with the goal of delivering the most desirable houses in the 
@@ -11,6 +12,8 @@ include 'top.php';
         leisure, bachelor/bachelorette pads, or just for fun. However, we normally will have some residential offerings
         for primary estates. 
     </p>
+    </section>
+    <section class="about-section">
     <h3><b>Buying Process</b></h3>
     <p>
         <p>We break the house buying experience into a 4 step process</p>
@@ -21,6 +24,7 @@ include 'top.php';
             <li>Celebrate: we will help you celebrate your new purchase by organizing a house warming party</li>
         </ol>
     </p>
+    </section>
 </main>
 <?php
 

@@ -41,6 +41,8 @@ else {
 // initialize save data to true
 $saveData = true;
 
+print '<main class="form-page">';
+
 function getData($field) {
     if (!isset($_POST[$field])) {
        $data = "";
@@ -53,6 +55,7 @@ function getData($field) {
 }
 
 if(isset($_POST['btnSubmit'])) {
+    print '<section class="form-message">';
     // sanitize
     $purchaseId = (int) getData('hdnPurchaseId');
     $houseId = (int) getData('hdnHouseId');
@@ -116,7 +119,6 @@ if(isset($_POST['btnSubmit'])) {
         }
     }
 
-    print '<section class="form-message">';
     if ($buyerHouseTableSuccess) {
         print '<h2 class="success-message">Purchase record has been updated!</h2>';
 
@@ -168,7 +170,6 @@ if(isset($_POST['btnSubmit'])) {
     print '</section>';
 }
 ?>
-<main class="form-page">
 <?php
 // only show form if the record exists
 if($purchaseId != 0) {

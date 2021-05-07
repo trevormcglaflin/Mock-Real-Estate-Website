@@ -32,6 +32,8 @@ else {
 // initialize save data to true
 $saveData = true;
 
+print '<main class="form-page">';
+
 function getData($field) {
     if (!isset($_POST[$field])) {
        $data = "";
@@ -44,6 +46,7 @@ function getData($field) {
 }
 
 if(isset($_POST['btnSubmit'])) {
+    print '<section class="form-message">';
     // sanitize
     $houseId = (int) getData('hdnHouseId');
     $realtorId = filter_var($_POST['dwnRealtorId'], FILTER_SANITIZE_STRING);
@@ -86,7 +89,6 @@ if(isset($_POST['btnSubmit'])) {
         $houseRealtorTableSuccess2 = $thisDatabaseWriter->insert($sql, $data);
     }
     // display message
-    print '<section class="form-message">';
     if ($houseRealtorTableSuccess1 && $houseRealtorTableSuccess2) {
         print '<h2 class="success-message">House has been assigned to ' . $realtorId .  '</h2>';
     }
@@ -95,9 +97,6 @@ if(isset($_POST['btnSubmit'])) {
     }
     print '</section>';
 }
-?>
-<main class="form-page">
-<?php
 // only show form if the house id exists
 if($houseId != 0) {
     $sql = 'SELECT fpkNetId FROM tblHouseRealtor WHERE fpkHouseId = ?';

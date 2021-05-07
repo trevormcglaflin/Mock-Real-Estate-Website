@@ -56,6 +56,8 @@ $saveData = true;
 // helps make image sticky
 $formProcessed = false;
 
+print '<main class="form-page">';
+
 function getData($field) {
     if (!isset($_POST[$field])) {
        $data = "";
@@ -68,6 +70,7 @@ function getData($field) {
 }
 
 if(isset($_POST['btnSubmit'])) {
+    print '<section class="form-message">';
     // if an existing profile picture doesn't exist then make them upload one
     // if it does exist then uploading a picture should be optional
     $existingPicture = filter_var($_POST['hdnProfilePicture'], FILTER_SANITIZE_STRING);
@@ -232,7 +235,6 @@ if(isset($_POST['btnSubmit'])) {
 
             $adminTableSuccess = $thisDatabaseWriter->insert($sql, $data);
 
-            print '<section class="form-message">';
             if ($adminTableSuccess) {}
             else {
                 print '<p class="error-message">Oh no, there was a problem adding/updating admin record.</p>';
@@ -244,20 +246,20 @@ if(isset($_POST['btnSubmit'])) {
             $deleteImage = shell_exec('rm ../images/' . $fileName);
             print '<p class="error-message">Image has been removed from directory.</p>';
         }
-        print '</section>';
     }
     // if form validation failed remove the image from directory
-    else {
+    else if ($newProfilePicture != $existingPicture) {
         $deleteImage = shell_exec('rm ../images/' . $fileName);
     }
+    print '</section>';
 }
 ?>
-<main class="form-page">
     <form action="<?php print PHP_SELF; ?>" id="addRealtorForm" method="post" enctype="multipart/form-data">
         <fieldset>
         <p>
             <label for="txtRealtorId">Realtor Net ID</label>
-            <input type="text" value="<?php print $realtorId; ?>" name="txtRealtorId" id="txtRealtorId">
+            <input type="text" value="<?php print $realtorId; ?>" name="txtRealtorId" id="txtRealtorId" 
+            <?php if ($realtorId != "") print " readonly "; ?> >
         </p>
         <p>
             <label for="txtFirstName">First Name</label>

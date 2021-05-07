@@ -55,6 +55,8 @@ $saveData = true;
 // helps make image sticky
 $formProcessed = false;
 
+print '<main class="form-page">';
+
 function getData($field) {
     if (!isset($_POST[$field])) {
        $data = "";
@@ -67,6 +69,7 @@ function getData($field) {
 }
 
 if(isset($_POST['btnSubmit'])) {
+    print '<section class="form-message">';
     // if an existing house image doesn't exist then make them upload one
     // if it does exist then uploading a picture should be optional
     $existingPicture = filter_var($_POST['hdnImageUrl'], FILTER_SANITIZE_STRING);
@@ -220,7 +223,6 @@ if(isset($_POST['btnSubmit'])) {
         }
         
         // display messages accordingly
-        print '<section class="form-message">';
         if ($houseTableSuccess && $newRecord) {
             print '<h2 class="success-message">' . $nickName .  ' successfully inserted into database!</h2>';
             $formProcessed = true;
@@ -239,16 +241,14 @@ if(isset($_POST['btnSubmit'])) {
             print '<p class="success-message">' . $realtorId . ' has been assigned to ' . $nickName . '!</p>';
             print '<p>NOTE: to change the realtor assigned to this house go to house assignment tab above</p>';
         }
-        print '</section>';
     }
     // if form validation failed remove the image from directory
-    else {
+    else if ($existingImageUrl != $newImageUrl) {
         $deleteImage = shell_exec('rm ../images/' . $fileName);
     }
+    print '</section>';
 }
 ?>
-
-<main class="form-page">
     <form action="<?php print PHP_SELF; ?>" id="addHouseForm" method="post" enctype="multipart/form-data">
         <fieldset>
         <p>

@@ -16,7 +16,7 @@ print '<h2>Featured Houses From Our Portfolio</h2>';
 $houseCount = 0;
 if(is_array($houses)){
     foreach($houses as $house){
-        print '<figure class="house">';
+        print '<figure class="portfolio-image">';
         print '<img alt="' . $house['fldNickName'] . '" src="images/' 
         . $house['fldImageUrl'] . '">';
         print '<figcaption>' . $house['fldNickName'] . '</figcaption>';

@@ -19,9 +19,25 @@ html {
     background-color: ghostwhite;
 }
 
+footer {
+  background-color: lightgray;
+  padding: 10px;
+  border-radius: 5px;
+  margin-top: 20px;
+}
+
 img {
     width: 400px;
     border-radius: 5%;
+}
+
+.portfolio-image {
+  width: 92%;
+  float: center;
+}
+
+.portfolio-image img {
+  float: center;
 }
 
 #buyer-message {
@@ -31,6 +47,7 @@ img {
 li {
   text-align: left;
 }
+
 
 /* grid setup */
 body{
@@ -98,7 +115,7 @@ footer{
   
 
   .navbar a:hover, .dropdown:hover .dropbtn {
-    background-color: royalblue;
+    background-color: cadetblue;
    }
   
   .dropdown-content {
@@ -128,11 +145,12 @@ footer{
   }
 
 .activePage {
-    background-color: royalblue;
+    background-color: cadetblue;
 }
 
+/* for zebra striping */
 .odd {
-    background-color: royalblue;
+    background-color: cadetblue;
     width: 60%;
     margin-top: 0px;
     margin-bottom: 0px;
@@ -179,7 +197,7 @@ footer{
     float: right;
 }
 
-/* for all form pages */
+/* for form pages */
 .form-page {
   display: grid;
   grid-template-columns: 100%;
@@ -226,10 +244,6 @@ textarea {
     resize: none;
 }
 
-#addWildlifeForm {
-    text-align: left;
-}
-
 .success-message {
   color: green;
 }
@@ -252,9 +266,35 @@ textarea {
 }
 .realtor-info {
    background-color: lightgray;
+   padding: 2%;
    opacity: 0.85;
+   border-radius: 5px;
 }
 
 .realtor-picture img {
   width: 300px;
 }
+
+.report-block {
+  background-color: lightgray;
+  border-radius: 2%;
+  opacity: 0.85;
+  padding: 10px;
+  margin: 10px;
+  width: 40%;
+}
+
+/* about page */
+.about-section {
+  background-color: lightgray;
+  border-radius: 5px;;
+  padding: 10px;
+  opacity: 0.85;
+  margin: 10px;
+  width: 60%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+
