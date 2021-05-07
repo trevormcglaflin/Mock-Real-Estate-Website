@@ -1,7 +1,6 @@
 <?php
 include 'top.php';
 $houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
-print '<p>House Id = ' . $houseId;
 
 // get house info
 // this sql only lets houses that are still for sale and are assigned a realtor to be viewed
@@ -16,19 +15,25 @@ $data = array($houseId);
 $houses = $thisDatabaseReader->select($sql, $data);
 ?>
 
-<main>
+<main class = "house-browsing">
 <?php
 if(sizeof($houses) > 0) {
     foreach($houses as $house) {
-        print '<a class="button" href="purchaseHouse.php?hid=' . $house['pmkHouseId'] . '">Buy ' . $house['fldNickName'] . '!</a><br>';
-        print '<section class="house-block">';
-        print '<p>Address: ' . $house['fldAddress'] . '</p>';
-        print '<p>Price: $' . number_format($house['fldPrice']) . '</p>';
-        print '<p>District: ' . $house['fldDistrict'] . '</p>';
+        print '<section class="house-pic"><figure class="house">';
+        print '<img alt="' . $house['fldNickName'] . '" src="images/' 
+        . $house['fldImageUrl'] . '">';
+        print '</figure></section>';
+        print '<section class = "house-block">';
+        print '<p><b>' . $house['fldNickName'] . '</b></p>';
+        print '<p>Market Price: $' . number_format($house['fldPrice']) . '</p>';
         print '<p>Square Feet: ' . $house['fldSquareFeet'] . '</p>';
+        print '<p>District: ' . $house['fldDistrict'] . '</p>';
+        print '<a class="button" href="purchaseHouse.php?hid=' . $house['pmkHouseId'] . '">Message Realtor!</a><br>';
         print '</section>';
-        print '<figure><img src=images/' . $house['fldImageUrl'] . ' alt=housePic></figure>';
-        print nl2br($house['fldDescription']);
+        print '<section class="house-profile">';
+        print '<p><b>House Profile</b></p>';
+        print '<p>' . $house['fldDescription'] . '</p>';
+        print '</section>';
     }
 }
 ?>

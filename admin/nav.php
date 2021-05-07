@@ -46,7 +46,7 @@
     if (PATH_PARTS['filename'] == "admin\company-report") {
         print'activePage';
     }
-    ?>" href="performanceReport.php">Company Report</a>
+    ?>" href="companyReport.php">Company Report</a>
     <a class="<?php
     if (PATH_PARTS['filename'] == "admin\realtor-report") {
         print'activePage';

@@ -32,7 +32,7 @@ if (!is_null($house)) {
     $district = $house['fldDistrict'];
     $squareFeet = $house['fldSquareFeet'];
     $nickName = $house['fldNickName'];
-    $imageUrl = $house['fldImageUrl'];
+    $existingImageUrl = $house['fldImageUrl'];
 }
 else {
     $price = "";
@@ -41,7 +41,7 @@ else {
     $district = "";
     $squareFeet = "";
     $nickName = "";
-    $imageUrl = "";
+    $existingImageUrl = "";
 
     // TODO: find a better way to do this
     // set house id by finding the last record's id and adding one
@@ -52,6 +52,8 @@ else {
 
 // set save data to true
 $saveData = true;
+// helps make image sticky
+$formProcessed = false;
 
 function getData($field) {
     if (!isset($_POST[$field])) {
@@ -65,6 +67,14 @@ function getData($field) {
 }
 
 if(isset($_POST['btnSubmit'])) {
+    // if an existing house image doesn't exist then make them upload one
+    // if it does exist then uploading a picture should be optional
+    $existingPicture = filter_var($_POST['hdnImageUrl'], FILTER_SANITIZE_STRING);
+    if (strlen($existingPicture) > 50) {
+        print '<p class="mistake">Hidden image url field invalid (must be 50 characters or less).</p>';
+        $saveData = false;
+    }
+    
     // for image submission
     include 'upload.php';
     
@@ -83,8 +93,14 @@ if(isset($_POST['btnSubmit'])) {
     $nickName = filter_var($_POST['txtNickName'], FILTER_SANITIZE_STRING);
     $houseId = (int) getData('hdnHouseId');
     $realtorId = filter_var($_POST['hdnRealtorId'], FILTER_SANITIZE_STRING);
-    // filename variable is created when upload.php is ran above
-    $imageUrl = filter_var($fileName, FILTER_SANITIZE_STRING);
+    // if a new file was not submitted and an old one exists then the old one is the "new" one
+    if ($fileName == "" && $existingPicture != "") {
+        $newImageUrl = filter_var($existingPicture, FILTER_SANITIZE_STRING);
+    }
+    // otherwise, the one submitted is the new one
+    else {
+        $newImageUrl = filter_var($fileName, FILTER_SANITIZE_STRING);
+    }
     
     // validate data
     // this is based on the file upload
@@ -99,7 +115,6 @@ if(isset($_POST['btnSubmit'])) {
         print '<p class="mistake">Please enter a valid address (70 characters or less).</p>';
         $saveData = false;
     }
-
     if (strlen($description) > 3000) {
         print '<p class="mistake">Please enter a valid description (3000 characters or less).</p>';
         $saveData = false;
@@ -116,7 +131,7 @@ if(isset($_POST['btnSubmit'])) {
         print '<p class="mistake">Please enter a valid nick name (75 characters or less).</p>';
         $saveData = false;
     }
-    if (strlen($imageUrl) > 50) {
+    if (strlen($newImageUrl) > 50) {
         print '<p class="mistake">Please enter a valid image url (50 characters or less).</p>';
         $saveData = false;
     }
@@ -154,7 +169,7 @@ if(isset($_POST['btnSubmit'])) {
         $data[] = $district;
         $data[] = $squareFeet;
         $data[] = $nickName;
-        $data[] = $imageUrl;
+        $data[] = $newImageUrl;
             
         # insert
         $houseTableSuccess = $thisDatabaseWriter->insert($sql, $data);
@@ -180,7 +195,7 @@ if(isset($_POST['btnSubmit'])) {
             $data[] = $district;
             $data[] = $squareFeet;
             $data[] = $nickName;
-            $data[] = $imageUrl;
+            $data[] = $newImageUrl;
             $data[] = $houseId;
 
             # update
@@ -198,14 +213,21 @@ if(isset($_POST['btnSubmit'])) {
             $data[] = $houseId;
             $houseRealtorTableSuccess = $thisDatabaseWriter->insert($sql, $data);
         }
-        
+
+        // delete old image if image was changed
+        if ($newImageUrl != $existingPicture) {
+            $deleteImage = shell_exec('rm ../images/' . $existingPicture);
+        }
         
         // display messages accordingly
+        print '<section class="form-message">';
         if ($houseTableSuccess && $newRecord) {
             print '<h2 class="success-message">' . $nickName .  ' successfully inserted into database!</h2>';
+            $formProcessed = true;
         }
         else if ($houseTableSuccess && !($newRecord)) {
             print '<h2 class="success-message">' . $nickName . ' record has been updated in database!</h2>';
+            $formProcessed = true;
         }
 
         else {
@@ -217,6 +239,7 @@ if(isset($_POST['btnSubmit'])) {
             print '<p class="success-message">' . $realtorId . ' has been assigned to ' . $nickName . '!</p>';
             print '<p>NOTE: to change the realtor assigned to this house go to house assignment tab above</p>';
         }
+        print '</section>';
     }
     // if form validation failed remove the image from directory
     else {
@@ -225,8 +248,9 @@ if(isset($_POST['btnSubmit'])) {
 }
 ?>
 
-<main>
+<main class="form-page">
     <form action="<?php print PHP_SELF; ?>" id="addHouseForm" method="post" enctype="multipart/form-data">
+        <fieldset>
         <p>
             <label for="txtPrice">Price $</label>
             <input type="text" value="<?php print $price; ?>" name="txtPrice" id="txtPrice">
@@ -234,12 +258,6 @@ if(isset($_POST['btnSubmit'])) {
         <p>
             <label for="txtAddress">Address</label>
             <input type="text" value="<?php print $address; ?>" name="txtAddress" id="txtAddress">
-        </p>
-        <p class="formInput">
-            <label for="txtDescription">Description</label>
-            <?php
-            print '<textarea id="txtDescription" name="txtDescription" rows="6" cols="50">' . $description . '</textarea>';
-            ?>
         </p> 
         <p>
             <label for="txtDistrict">District</label>
@@ -253,14 +271,39 @@ if(isset($_POST['btnSubmit'])) {
             <label for="txtNickName">Nick Name</label>
             <input type="text" value="<?php print $nickName; ?>" name="txtNickName" id="txtNickName">
         </p>
+        </fieldset>
+        <fieldset>
+        <p class="formInput">
+            <label class="text-area-label" for="txtDescription">Description</label>
+            <?php
+            print '<textarea class="text-area-input" id="txtDescription" name="txtDescription" rows="6" cols="50">' . $description . '</textarea>';
+            ?>
+        </p>
+        </fieldset>
+        <fieldset>
         <p>
-            Upload House Image:
+        <?php 
+        if (!$formProcessed) {
+            if ($existingImageUrl != "") { 
+                print 'NOTE: house already has a picture, so only upload if you want a new one';
+                print '<figure><img src=../images/' . $existingImageUrl . ' alt=realtorPic><figure>';
+            }
+        }
+        else {
+            print '<figure><img src=../images/' . $newImageUrl . ' alt=realtorPic><figure>';
+        }
+        ?> 
+            Upload Main House Image:
             <input type="file" name="fileToUpload" id="fileToUpload">
-        </p>  
+        </p> 
+        </fieldset>
+        <p>
+            <?php print '<input type="hidden" id="hdnImageUrl" name="hdnImageUrl" value="' . $existingImageUrl . '">'; ?>
+        </p> 
         <?php print '<input type="hidden" id="hdnHouseId" name="hdnHouseId" value="' . $houseId . '">'; ?>
         <?php print '<input type="hidden" id="hdnRealtorId" name="hdnRealtorId" value="' . $netId . '">'; ?>
         <fieldset>
-            <p><input type="submit" value="Insert Record" tabindex="999" name="btnSubmit"></p>
+            <p><input class="submit-button" type="submit" value="Insert Record" tabindex="999" name="btnSubmit"></p>
         </fieldset>
     </form>
 </main>

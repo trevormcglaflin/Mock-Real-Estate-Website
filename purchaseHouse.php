@@ -3,10 +3,9 @@ include 'top.php';
 $houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 ?>
 
-<main>
+<main class="form-page">
 
 <?php
-
 // get house info
 // this sql makes sure only lets houses that are still for sale and are assigned a realtor to be purchased
 $sql = 'SELECT DISTINCT pmkHouseId, fldPrice, fldAddress, fldDescription, fldDistrict, ';
@@ -53,7 +52,7 @@ function validateName($name) {
 }
 
 if ($houseId != 0) {
-    print '<h2>Purchase ' . $house['fldNickName'] . '</h2>';
+    print '<p id="message-realtor-header">Message Realtor about ' . $house['fldNickName'] . '</p>';
 }
 
 if(isset($_POST['btnSubmit'])) {
@@ -63,7 +62,7 @@ if(isset($_POST['btnSubmit'])) {
         print '</pre>';
     }
 
-    //sanitize data
+    // sanitize data
     $email = filter_var($_POST['txtEmail'], FILTER_SANITIZE_EMAIL);
     $firstName = filter_var($_POST['txtFirstName'], FILTER_SANITIZE_STRING);
     $lastName = filter_var($_POST['txtLastName'], FILTER_SANITIZE_STRING);
@@ -71,13 +70,13 @@ if(isset($_POST['btnSubmit'])) {
     $message = filter_var($_POST['txtMessage'], FILTER_SANITIZE_STRING);
     $houseId = (int) getData('hdnHouseId');
 
-    //validate data
-    if (!validateName($firstName)) {
+    // validate data
+    if (!validateName($firstName) || strlen($firstName) > 25) {
         print '<p class="mistake">Please enter a valid first name.</p>';
         $saveData = false;
     }
 
-    if (!validateName($lastName)) {
+    if (!validateName($lastName) || strlen($lastName) > 35) {
         print '<p class="mistake">Please enter a valid last name.</p>';
         $saveData = false;
     }
@@ -139,6 +138,8 @@ if(isset($_POST['btnSubmit'])) {
         
         $buyerTableSuccess = $thisDatabaseWriter->insert($sql2, $data2);
 
+        // display form message
+        print '<section class="form-message">';
         if ($buyerTableSuccess && $buyerHouseTableSuccess) {
             print '<h2 class="success-message">The agency has received your message, and will be in touch shortly!</h2>';
             
@@ -172,6 +173,8 @@ if(isset($_POST['btnSubmit'])) {
         else {
             print '<p class = "error-message">Something went wrong, your information has not been recorded properly.</p>';
         }
+        print '</section>';
+        
         if (DEBUG) {
             print $thisDatabaseReader->displayQuery($sql2, $data2);
         }
@@ -202,13 +205,13 @@ if ($houseId != 0) {
     print '</fieldset>';
     print '<fieldset class = "message">';
     print '<p>';
-    print '<label for="txtMessage">Message</label>';
-    print '<textarea id="txtMessage" name="txtMessage" rows="6" cols="50">' . $message . '</textarea>';
+    print '<label class="text-area-label" for="txtMessage">Message</label>';
+    print '<textarea class="text-area-input" id="txtMessage" name="txtMessage" rows="6" cols="50">' . $message . '</textarea>';
     print '</p>'; 
     print '</fieldset>';
     print '<input type="hidden" id="hdnHouseId" name="hdnHouseId" value="' . $houseId . '">'; 
     print '<fieldset>';
-    print '<p><input type="submit" value="Purchase" tabindex="999" name="btnSubmit"></p>';
+    print '<p><input class="submit-button" type="submit" value="Message Realtor" tabindex="999" name="btnSubmit"></p>';
     print '</fieldset>';
     print '</form>';
 }

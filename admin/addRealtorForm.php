@@ -36,7 +36,7 @@ if (!is_null($realtor) && sizeof($adminRecord) != 0) {
     $phoneNumber = $realtor['fldPhoneNumber'];
     $profile = $realtor['fldProfile'];
     $isActive = $realtor['fldIsActive'];
-    $profilePicture = $realtor['fldProfilePicture'];
+    $existingPicture = $realtor['fldProfilePicture'];
     $permissionLevel = $adminRecord[0]['fldPermissionLevel'];
 }
 else {
@@ -47,12 +47,14 @@ else {
     $phoneNumber = "";
     $profile = "";
     $isActive = 1;
-    $profilePicture = "";
+    $existingPicture = "";
     $permissionLevel = 0;
 }
 
 // set save data to true
 $saveData = true;
+// helps make image sticky
+$formProcessed = false;
 
 function getData($field) {
     if (!isset($_POST[$field])) {
@@ -66,6 +68,14 @@ function getData($field) {
 }
 
 if(isset($_POST['btnSubmit'])) {
+    // if an existing profile picture doesn't exist then make them upload one
+    // if it does exist then uploading a picture should be optional
+    $existingPicture = filter_var($_POST['hdnProfilePicture'], FILTER_SANITIZE_STRING);
+    if (strlen($existingPicture) > 50) {
+        print '<p class="mistake">Hidden profile picture field invalid (must be 50 characters or less).</p>';
+        $saveData = false;
+    }
+   
     // for image submission
     include 'upload.php';
     if(DEBUG) {
@@ -81,11 +91,16 @@ if(isset($_POST['btnSubmit'])) {
     $realtorEmail = filter_var($_POST['txtRealtorEmail'], FILTER_SANITIZE_EMAIL);
     $phoneNumber = filter_var($_POST['txtPhoneNumber'], FILTER_SANITIZE_STRING);
     $profile = filter_var($_POST['txtProfile'], FILTER_SANITIZE_STRING);
-    // TODO: santize this properly
     $isActive = (int) getData('chkIsActive');
     $permissionLevel = (int) getData('dwnPermissionLevel');
-    $profilePicture = filter_var($fileName, FILTER_SANITIZE_STRING);
-    
+    // if a new file was not submitted and an old one exists then the old one is the "new" one
+    if ($fileName == "" && $existingPicture != "") {
+        $newProfilePicture = filter_var($existingPicture, FILTER_SANITIZE_STRING);
+    }
+    // otherwise, the one sumitted is the new one
+    else {
+        $newProfilePicture = filter_var($fileName, FILTER_SANITIZE_STRING);
+    }
     
     // validate data
     // this is based on the file upload
@@ -118,6 +133,22 @@ if(isset($_POST['btnSubmit'])) {
     }
     if ($isActive != 1) {
         $isActive = 0;
+    }
+
+    // if the realtor is no longer active we should check if they have any houses still assigned to them on the market
+    if ($isActive == 0) {
+        $sql = 'SELECT pmkHouseId ';
+        $sql .= 'FROM tblBuyHouse ';
+        $sql .= 'RIGHT JOIN tblHouse ON tblBuyHouse.fpkHouseId = tblHouse.pmkHouseId ';
+        $sql .= 'JOIN tblHouseRealtor ON tblHouse.pmkHouseID = tblHouseRealtor.fpkHouseId ';
+        $sql .= 'WHERE (tblBuyHouse.fpkHouseId IS NULL OR tblBuyHouse.fldPurchased = 0) AND tblHouseRealtor.fpkNetId = ?';
+        $data = array($realtorId);
+        $houses = $thisDatabaseReader->select($sql, $data);
+        if (sizeof($houses) > 0) {
+            print '<p class="mistake">The realtor still has house(s) assigned to them, so unassign them before making them inactive.</p>';
+            print '<p class="mistake">To do this, go to assign realtor page in nav bar above.</p>';
+            $saveData = false;
+        }
     }
 
     if ($houseId < 0) {
@@ -160,20 +191,26 @@ if(isset($_POST['btnSubmit'])) {
         $data[] = $phoneNumber;
         $data[] = $profile;
         $data[] = $isActive;
-        $data[] = $profilePicture;
+        $data[] = $newProfilePicture;
         $data[] = $firstName;
         $data[] = $lastName;
         $data[] = $realtorEmail;
         $data[] = $phoneNumber;
         $data[] = $profile;
         $data[] = $isActive;
-        $data[] = $profilePicture;
+        $data[] = $newProfilePicture;
             
         # insert/update
         $realtorTableSuccess = $thisDatabaseWriter->insert($sql, $data);
+
+        // delete old image if image was changed
+        if ($newProfilePicture != $existingPicture) {
+            $deleteImage = shell_exec('rm ../images/' . $existingPicture);
+        }
         
         if ($realtorTableSuccess) {
             print '<h2 class="success-message">Realtor database successfully updated!</h2>';
+            $formProcessed = true;
 
             // if the realtor table was successfully updated, insert/update the admin table
             $sql = 'INSERT INTO tblAdmin SET ';
@@ -195,6 +232,7 @@ if(isset($_POST['btnSubmit'])) {
 
             $adminTableSuccess = $thisDatabaseWriter->insert($sql, $data);
 
+            print '<section class="form-message">';
             if ($adminTableSuccess) {}
             else {
                 print '<p class="error-message">Oh no, there was a problem adding/updating admin record.</p>';
@@ -206,6 +244,7 @@ if(isset($_POST['btnSubmit'])) {
             $deleteImage = shell_exec('rm ../images/' . $fileName);
             print '<p class="error-message">Image has been removed from directory.</p>';
         }
+        print '</section>';
     }
     // if form validation failed remove the image from directory
     else {
@@ -213,8 +252,9 @@ if(isset($_POST['btnSubmit'])) {
     }
 }
 ?>
-<main>
+<main class="form-page">
     <form action="<?php print PHP_SELF; ?>" id="addRealtorForm" method="post" enctype="multipart/form-data">
+        <fieldset>
         <p>
             <label for="txtRealtorId">Realtor Net ID</label>
             <input type="text" value="<?php print $realtorId; ?>" name="txtRealtorId" id="txtRealtorId">
@@ -235,12 +275,16 @@ if(isset($_POST['btnSubmit'])) {
             <label for="txtPhoneNumber">Phone Number</label>
             <input type="text" value="<?php print $phoneNumber; ?>" name="txtPhoneNumber" id="txtPhoneNumber">
         </p>
+        </fieldset>
+        <fieldset>
         <p class="formInput">
-            <label for="txtProfile">Realtor Profile</label>
+            <label class="text-area-label" for="txtProfile">Realtor Profile</label>
             <?php
-            print '<textarea id="txtProfile" name="txtProfile" rows="6" cols="50">' . $profile . '</textarea>';
+            print '<textarea class="text-area-input" id="txtProfile" name="txtProfile" rows="6" cols="50">' . $profile . '</textarea>';
             ?>
         </p>
+        </fieldset>
+        <fieldset>
         <p>
             <label for="dwnPermissionLevel">Permission Level</label>
             <select id="dwnPermissionLevel" name="dwnPermissionLevel">
@@ -265,12 +309,29 @@ if(isset($_POST['btnSubmit'])) {
                 type="checkbox"
                 value="1">Is Employee Active?</label>
         </p>
+        </fieldset>
+        <fieldset>
         <p>
-             Upload Realtor Profile Picture:
+        <?php 
+        if (!$formProcessed) {
+            if ($existingPicture != "") { 
+                print 'NOTE: realtor already has a picture, so only upload if you want a new one';
+                print '<figure><img src=../images/' . $existingPicture . ' alt=realtorPic><figure>';
+            }
+        }
+        else {
+            print '<figure><img src=../images/' . $newProfilePicture . ' alt=realtorPic><figure>';
+        }
+        ?> 
+            Upload Realtor Profile Picture:
             <input type="file" name="fileToUpload" id="fileToUpload">
         </p> 
+        </fieldset>
+        <p>
+            <?php print '<input type="hidden" id="hdnProfilePicture" name="hdnProfilePicture" value="' . $existingPicture . '">'; ?>
+        </p>
         <fieldset>
-            <p><input type="submit" value="Insert Record" tabindex="999" name="btnSubmit"></p>
+            <p><input class="submit-button" type="submit" value="Insert Record" tabindex="999" name="btnSubmit"></p>
         </fieldset>
     </form>
 </main>

@@ -22,7 +22,6 @@ if(is_array($realtors)){
         print '<p>Phone Number:<em> ' . $realtor['fldPhoneNumber'] . '</em></p>';
         print '</section>';
         print '<section class="realtor-picture"><figure><img src=images/' . $realtor['fldProfilePicture'] . ' alt=realtorPic><figure></section>';
-        
     }
 }
 ?>

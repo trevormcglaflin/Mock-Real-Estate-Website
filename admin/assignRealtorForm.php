@@ -9,8 +9,8 @@ if ($adminPermissionLevel < 3) {
 $houseId = (isset($_GET['hid'])) ? (int) htmlspecialchars($_GET['hid']) : 0;
 
 // if a house has been sold, you can not delete it from database
-$sql = 'SELECT pmkHouseId, fldNickName, fldImageUrl, fldAddress, fldDescription, fpkNetId, ';
-$sql .= 'fldDistrict, fldSquareFeet ';
+$sql = 'SELECT DISTINCT pmkHouseId, fldNickName, fldImageUrl, fldAddress, fldDescription, fpkNetId, ';
+$sql .= 'fldDistrict, fldSquareFeet, fldDateListed ';
 $sql .= 'FROM tblBuyHouse ';
 $sql .= 'RIGHT JOIN tblHouse ON tblBuyHouse.fpkHouseId = tblHouse.pmkHouseId ';
 $sql .= 'JOIN tblHouseRealtor ON tblHouse.pmkHouseID = tblHouseRealtor.fpkHouseId ';
@@ -86,15 +86,17 @@ if(isset($_POST['btnSubmit'])) {
         $houseRealtorTableSuccess2 = $thisDatabaseWriter->insert($sql, $data);
     }
     // display message
+    print '<section class="form-message">';
     if ($houseRealtorTableSuccess1 && $houseRealtorTableSuccess2) {
         print '<h2 class="success-message">House has been assigned to ' . $realtorId .  '</h2>';
     }
     else {
         print '<h2 class="error-message">Something went wrong, house was not assigned to ' . $realtorId. '</h2>';
     }
+    print '</section>';
 }
 ?>
-<main>
+<main class="form-page">
 <?php
 // only show form if the house id exists
 if($houseId != 0) {
@@ -107,6 +109,7 @@ if($houseId != 0) {
     $sql = 'SELECT pmkNetId, fldFirstName, fldLastName FROM tblRealtor';
     $realtors = $thisDatabaseReader->select($sql);
     print '<form action="' .PHP_SELF . '" id="deleteHouseForm" method="post">';
+    print '<fieldset>';
     print '<p>';
     print '<label for="dwnRealtorId">New House Assignee</label>';
     print '<select id="dwnRealtorId" name="dwnRealtorId">';
@@ -119,29 +122,30 @@ if($houseId != 0) {
         }
     }
     print '</select>';
+    print '</fieldset>';
     print '<input type="hidden" id="hdnHouseId" name="hdnHouseId" value="' . $houseId . '">'; 
     print '<fieldset>';
-    print '<p><input type="submit" value="Re-assign House" tabindex="999" name="btnSubmit"></p>';
+    print '<p><input class="submit-button" type="submit" value="Re-assign House" tabindex="999" name="btnSubmit"></p>';
     print '</fieldset>';
     print '</form>';
     
     foreach($houses as $house) {
-        print '<h2>' . $house['fldNickName'] . '</h2>';
-        print '<figure><img src=../images/' . $house['fldImageUrl'] . ' alt=housePic></figure>';
-        print nl2br($house['fldDescription']);
-        print '<h3><b>Price</b></h3>';
-        print number_format($house['fldPrice']);
-        print '<h3><b>Address</b></h3>';
-        print $house['fldAddress'];
-        print '<h3><b>District</b></h3>';
-        print $house['fldDistrict'];
-        print '<h3><b>Square Feet</b></h3>';
-        print $house['fldSquareFeet'];
-        print '<h3><b>Date Listed</b></h3>';
-        print $house['fldDateListed'];
-        print '<h3><b>Image Url</b></h3>';
-        print $house['fldImageUrl'];
-        
+        print '<section class="house-browsing">';
+        print '<section class="house-pic"><figure class="house">';
+        print '<img alt="' . $house['fldNickName'] . '" src="../images/' 
+        . $house['fldImageUrl'] . '">';
+        print '</figure></section>';
+        print '<section class = "house-block">';
+        print '<p><b>' . $house['fldNickName'] . '</b></p>';
+        print '<p>Market Price: $' . number_format($house['fldPrice']) . '</p>';
+        print '<p>Square Feet: ' . $house['fldSquareFeet'] . '</p>';
+        print '<p>District: ' . $house['fldDistrict'] . '</p>';
+        print '<p>Date Listed: ' . $house['fldDateListed'] . '</p>';
+        print '</section>';
+        print '<section class="house-profile">';
+        print '<p><b>House Profile</b></p>';
+        print '<p>' . $house['fldDescription'] . '</p>';
+        print '</section></section>';
     }
 }
 else {

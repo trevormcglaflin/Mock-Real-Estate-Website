@@ -8,7 +8,7 @@ if ($adminPermissionLevel < 3) {
 
 $purchaseId = (isset($_GET['pid'])) ? (int) htmlspecialchars($_GET['pid']) : 0;
 
-$sql = 'SELECT pmkPurchaseId, fpkBuyerEmail, fpkHouseId, fldNickName, fldPrice, ';
+$sql = 'SELECT pmkPurchaseId, fpkBuyerEmail, fpkHouseId, fldNickName, fldPrice, fldDateListed, ';
 $sql .= 'fldAddress, fldDistrict, fldSquareFeet, fldNickName, fldImageUrl, fldPending, fldPurchased ';
 $sql .= 'FROM tblHouse ';
 $sql .= 'JOIN tblBuyHouse ON pmkHouseId = fpkHouseId ';
@@ -21,13 +21,22 @@ if (sizeof($purchases) > 0) {
     $purchase = $purchases[0];
     $isPending = $purchase['fldPending'];
     $isPurchased = $purchase['fldPurchased'];
+    // need this so drop down can be sticky
+    if ($isPurchased == 1) {
+        $purchaseStatus = "purchased";
+    }
+    else if ($isPending == 1) {
+        $purchaseStatus = "pending";
+    }
+    else {
+        $purchaseStatus = "interested";
+    }
     $houseId = $purchase['fpkHouseId'];
 }
 else {
     $purchase = NULL;
     $purchaseId = 0;
 }
-$purchaseStatus = "";
 
 // initialize save data to true
 $saveData = true;
@@ -106,6 +115,8 @@ if(isset($_POST['btnSubmit'])) {
             $buyerHouseTableSuccess = $thisDatabaseWriter->insert($sql, $data);
         }
     }
+
+    print '<section class="form-message">';
     if ($buyerHouseTableSuccess) {
         print '<h2 class="success-message">Purchase record has been updated!</h2>';
 
@@ -154,34 +165,37 @@ if(isset($_POST['btnSubmit'])) {
     else {
         print '<h2 class="error-message">Something went wrong, purchase record was not updated.</h2>';
     }
+    print '</section>';
 }
 ?>
-<main>
+<main class="form-page">
 <?php
 // only show form if the record exists
 if($purchaseId != 0) {
     print '<h3 class="warning">NOTICE: cancelling a record will delete completely from database.</h3>';
     print '<form action="' .PHP_SELF . '" id="deletePurchaseForm" method="post">';
+    print '<fieldset>';
     print '<label for="dwnPurchaseStatus">Purchase Status</label>';
     print '<select id="dwnPurchaseStatus" name="dwnPurchaseStatus">';
     print '<option value="interested"'; 
-    if (!$isPurchased && !$isPending) print ' selected ';
+    if ($purchaseStatus == "interested") print ' selected ';
     print '>Interested</option>';
     print '<option value="pending"';   
-    if ($isPending && !$isPurchased) print ' selected ';
+    if ($purchaseStatus == "pending") print ' selected ';
     print '>Pending</option>';
     print '<option value="purchased"';
-    if ($isPurchased) print ' selected '; 
+    if ($purchaseStatus == "purchased") print ' selected '; 
     print '>Purchased</option>';
     print '<option value="cancelled">Cancelled</option>';
     print '</select>';
+    print '</fieldset>';
     print '<input type="hidden" id="hdnPurchaseId" name="hdnPurchaseId" value="' . $purchaseId . '">'; 
     print '<input type="hidden" id="hdnHouseId" name="hdnHouseId" value="' . $houseId . '">'; 
     print '<input type="hidden" id="hdnNickName" name="hdnNickName" value="' . $purchase['fldNickName'] . '">';
     print '<input type="hidden" id="hdnBuyerEmail" name="hdnBuyerEmail" value="' . $purchase['fpkBuyerEmail'] . '">';  
     print '<input type="hidden" id="hdnPrice" name="hdnPrice" value="' . $purchase['fldPrice'] . '">'; 
     print '<fieldset>';
-    print '<p><input type="submit" value="Update Purchase Record" tabindex="999" name="btnSubmit"></p>';
+    print '<p><input class="submit-button" type="submit" value="Update Purchase Record" tabindex="999" name="btnSubmit"></p>';
     print '</fieldset>';
     print '</form>';
     
@@ -203,7 +217,6 @@ if($purchaseId != 0) {
         print $purchase['fldDateListed'];
         print '<h3><b>Image Url</b></h3>';
         print $purchase['fldImageUrl'];
-        
     }
 }
 ?>

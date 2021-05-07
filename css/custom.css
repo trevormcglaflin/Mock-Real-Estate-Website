@@ -28,12 +28,6 @@ img {
     color: green;
 }
 
-.button {
-    float: right;
-    background: black;
-    color: white;
-}
-
 li {
   text-align: left;
 }
@@ -155,14 +149,76 @@ footer{
     margin-right:auto;
 }
 
+/* for house browsing and display page */
+.house-browsing {
+  display: grid;
+  grid-gap: 50px;
+  grid-template-columns: 500px 300px;
+}
+
+.button {
+  color: rgb(47, 72, 79);
+  background-color: lightyellow;
+  border-radius: 5%;
+  float: left;
+}
+
 .house-block {
   background-color: lightgray;
   opacity: 0.85;
-  width: 40%;
+  padding: 20px;
+  border-radius: 5%;
+  text-decoration: none;
+}
+
+.house {
+  width: 600px;
 }
 
 .admin-button {
     float: right;
+}
+
+/* for all form pages */
+.form-page {
+  display: grid;
+  grid-template-columns: 100%;
+}
+
+.form-message {
+  background-color: lightyellow;
+  border-radius: 10px;
+  padding: 5px;
+  margin: 10px;
+}
+
+input, select {
+  float: right;
+  width: 200px;
+  border-radius: 2px;
+}
+
+fieldset {
+  width: 50%;
+  background-color: lightgray;
+  margin-bottom: 10px;
+  border-radius: 5px;
+}
+
+.text-area-input, .text-area-label {
+  display: block;
+}
+
+#message-realtor-header {
+  float: left;
+}
+
+.submit-button {
+  float: left;
+}
+
+#delete-button {
+  background-color: red;
 }
 
 textarea {

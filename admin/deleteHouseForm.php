@@ -63,6 +63,7 @@ if(isset($_POST['btnSubmit'])) {
         $houseTableSuccess = $thisDatabaseWriter->delete($sql, $data);
     }
     // display message
+    print '<section class="form-message">';
     if ($houseTableSuccess) {
         $deleteImage = shell_exec('rm ../images/' . $imageUrl);
         print '<h2 class="success-message">House record has been deleted!</h2>';
@@ -73,9 +74,10 @@ if(isset($_POST['btnSubmit'])) {
     if ($houseRealtorTableSuccess) {
         print '<p class="success-message">The realtor assigned to this house was unassigned from it, since it is no longer in database.</p>';
     }
+    print '</section>';
 }
 ?>
-<main>
+<main class="form-page">
 <?php
 // only show delete button if the record exists
 if($houseId != 0) {
@@ -83,26 +85,27 @@ if($houseId != 0) {
     print '<input type="hidden" id="hdnHouseId" name="hdnHouseId" value="' . $houseId . '">'; 
     print '<input type="hidden" id="hdnImageUrl" name="hdnImageUrl" value="' . $house['fldImageUrl'] . '">'; 
     print '<fieldset>';
-    print '<p><input type="submit" value="Delete Record" tabindex="999" name="btnSubmit"></p>';
+    print '<p><input class="submit-button" id="delete-button" type="submit" value="Delete Record" tabindex="999" name="btnSubmit"></p>';
     print '</fieldset>';
     print '</form>';
     
     foreach($houses as $house) {
-        print '<p>' . $house['fldNickName'] . '</p>';
-        print '<figure><img src=../images/' . $house['fldImageUrl'] . ' alt=housePic></figure>';
-        print nl2br($house['fldDescription']);
-        print '<h3><b>Price</b></h3>';
-        print number_format($house['fldPrice']);
-        print '<h3><b>Address</b></h3>';
-        print $house['fldAddress'];
-        print '<h3><b>District</b></h3>';
-        print $house['fldDistrict'];
-        print '<h3><b>Square Feet</b></h3>';
-        print $house['fldSquareFeet'];
-        print '<h3><b>Date Listed</b></h3>';
-        print $house['fldDateListed'];
-        print '<h3><b>Image Url</b></h3>';
-        print $house['fldImageUrl'];
+        print '<section class="house-browsing">';
+        print '<section class="house-pic"><figure class="house">';
+        print '<img alt="' . $house['fldNickName'] . '" src="../images/' 
+        . $house['fldImageUrl'] . '">';
+        print '</figure></section>';
+        print '<section class = "house-block">';
+        print '<p><b>' . $house['fldNickName'] . '</b></p>';
+        print '<p>Market Price: $' . number_format($house['fldPrice']) . '</p>';
+        print '<p>Square Feet: ' . $house['fldSquareFeet'] . '</p>';
+        print '<p>District: ' . $house['fldDistrict'] . '</p>';
+        print '<p>Date Listed: ' . $house['fldDateListed'] . '</p>';
+        print '</section>';
+        print '<section class="house-profile">';
+        print '<p><b>House Profile</b></p>';
+        print '<p>' . $house['fldDescription'] . '</p>';
+        print '</section></section>';
     }
 }
 else {
