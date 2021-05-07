@@ -12,8 +12,8 @@ $houses = $thisDatabaseReader->select($sql, $data);
 ?>
 <main>
 <?php
-print '<h2>Featured Houses From Our Portfolio</h2>';
 print '<section class="portfolio">';
+print '<h2>Featured Houses From Our Portfolio</h2>';
 $houseCount = 0;
 if(is_array($houses)){
     foreach($houses as $house){

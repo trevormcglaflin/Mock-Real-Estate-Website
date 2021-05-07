@@ -33,11 +33,6 @@ img {
 
 .portfolio-image {
   width: 92%;
-  float: center;
-}
-
-.portfolio-image img {
-  float: center;
 }
 
 #portfolio-note {
