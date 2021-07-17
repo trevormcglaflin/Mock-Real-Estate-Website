@@ -12,7 +12,8 @@ Code Breakdown
 As mentioned before, this is a PHP application. In order to communicate with my database, I used pdo objects and used prepared SQL statements
 to insert form data. I also used pdo reading objects to query information needed for each page. If you navigate to the pages with the word "form"
 in them you will see how I sanitize and write the information into the database. Also, if you go to browseHouses or displayHouses you can see
-examples of some of the SQL join statements that I put together.
+examples of some of the SQL join statements that I put together. Navigate to the admin folder to look through the files related to the admin
+pages. This is where the forms are to add a new realtor to the database or to add a new house for instance. 
 
 
  
